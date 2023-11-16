@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -13,7 +14,7 @@ import '../../model/video.dart';
 class VideoController extends GetxController {
   VideoPlayerController? _controller;
   List<VideoModel> _videos = [];
-  String userEmail = 'user@example.com';
+  String userId = '';
 
   VideoController() {
     _controller = VideoPlayerController.networkUrl(Uri.parse(''));
@@ -27,9 +28,11 @@ class VideoController extends GetxController {
 
   List<VideoModel> get videos => _videos;
   Future<void> _loadVideos() async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    String userId = currentUser?.uid ?? '';
     QuerySnapshot videoSnapshot = await FirebaseFirestore.instance
         .collection('videos')
-        .where('user', isEqualTo: userEmail) // Change this to 'userEmail' if that's the correct field in your Firestore document
+        .where('user', isEqualTo: userId)
         .get();
     _videos = videoSnapshot.docs
         .map((doc) => VideoModel(url: doc['url'], user: doc['user']))
@@ -37,16 +40,16 @@ class VideoController extends GetxController {
     update();
   }
 
-  Future<String?> uploadVideo(File videoFile, String userEmail) async {
+  Future<String?> uploadVideo(File videoFile, String userId) async {
     try {
       FirebaseFirestore firestore = FirebaseFirestore.instance;
 
       DocumentSnapshot userSnapshot =
-      await firestore.collection('user').doc(userEmail).get();
+      await firestore.collection('user').doc(userId).get();
 
       if (!userSnapshot.exists) {
-        await firestore.collection('user').doc(userEmail).set({
-          'email': userEmail,
+        await firestore.collection('user').doc(userId).set({
+          'email': userId,
         });
       }
 
@@ -64,7 +67,7 @@ class VideoController extends GetxController {
 
       await firestore.collection('videos').add({
         'url': videoUrl,
-        'user': userEmail,
+        'user': userId,
       });
 
       _loadVideos(); // Reload videos after upload
@@ -77,9 +80,8 @@ class VideoController extends GetxController {
 
   Future<void> updateUserName() async {
     try {
-      // Update the email property of the user document
       FirebaseFirestore firestore = FirebaseFirestore.instance;
-      await firestore.collection('user').doc(userEmail).update({'email': 'new_email@example.com'});
+      await firestore.collection('user').doc(userId).update({'email': 'new_email@example.com'});
       print('User email updated successfully.');
     } catch (e) {
       print('Error updating user email: $e');

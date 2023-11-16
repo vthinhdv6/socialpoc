@@ -1,8 +1,13 @@
 import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:chewie/chewie.dart';
+import 'package:video_player/video_player.dart';
+import 'package:get/get.dart';
+import 'profile_controller.dart';
 
 class Profile extends StatelessWidget {
   @override
@@ -13,13 +18,8 @@ class Profile extends StatelessWidget {
     );
   }
 }
-class TikTokProfileScreen extends StatefulWidget {
-  @override
-  _TikTokProfileScreenState createState() => _TikTokProfileScreenState();
-}
-
-class _TikTokProfileScreenState extends State<TikTokProfileScreen> {
-  List<String> _videos = [];
+class TikTokProfileScreen extends StatelessWidget {
+  final VideoController videoController = Get.put(VideoController());
 
   @override
   Widget build(BuildContext context) {
@@ -27,15 +27,13 @@ class _TikTokProfileScreenState extends State<TikTokProfileScreen> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Phần thông tin cá nhân
           Container(
             padding: EdgeInsets.all(16.0),
             child: Column(
               children: [
                 CircleAvatar(
                   radius: 40.0,
-                  backgroundImage: NetworkImage(
-                      'https://example.com/your_profile_image.jpg'),
+                  backgroundImage: NetworkImage('https://example.com/your_profile_image.jpg'),
                 ),
                 SizedBox(height: 16.0),
                 Row(
@@ -72,25 +70,30 @@ class _TikTokProfileScreenState extends State<TikTokProfileScreen> {
             ),
           ),
           Expanded(
-            child: ListView.builder(
-              itemCount: _videos.length,
-              itemBuilder: (context, index) {
-                return Container(
-                  height: 200.0,
-                  margin: EdgeInsets.symmetric(vertical: 8.0),
-                  decoration: BoxDecoration(
-                    color: Colors.grey,
-                  ),
-                  child: Center(
-                    child: IconButton(
-                      icon: Icon(Icons.play_arrow, size: 50.0),
-                      onPressed: () {
-                        // Xử lý khi nhấn vào video
-                      },
-                    ),
-                  ),
-                );
-              },
+            child: GetBuilder<VideoController>(
+              builder: (controller) => ListView.builder(
+                itemCount: controller.videos.length,
+                itemBuilder: (context, index) {
+                  // Chỉ hiển thị video của người dùng đang đăng nhập
+                  if (controller.videos[index].user == FirebaseAuth.instance.currentUser?.uid) {
+                    return Container(
+                      height: 50.0,
+                      margin: EdgeInsets.symmetric(vertical: 8.0),
+                      child: Chewie(
+                        controller: ChewieController(
+                          videoPlayerController: VideoPlayerController.network(
+                            controller.videos[index].url,
+                          ),
+                          autoPlay: false,
+                          looping: false,
+                        ),
+                      ),
+                    );
+                  } else {
+                    return Container();
+                  }
+                },
+              ),
             ),
           ),
           ElevatedButton(
@@ -103,7 +106,8 @@ class _TikTokProfileScreenState extends State<TikTokProfileScreen> {
                 if (selectedFile.path != null) {
                   print('Selected File Path: ${selectedFile.path}');
                   File videoFile = File(selectedFile.path!);
-                  await _uploadVideo(videoFile);
+                  String userId = FirebaseAuth.instance.currentUser?.uid ?? '';
+                  await videoController.uploadVideo(videoFile, userId);
                 } else {
                   print('Error: selectedFile.path is null.');
                 }
@@ -111,37 +115,9 @@ class _TikTokProfileScreenState extends State<TikTokProfileScreen> {
             },
             child: Text('Chọn và Upload Video'),
           ),
+
         ],
       ),
     );
-  }
-
-  Future<void> _uploadVideo(File videoFile) async {
-    try {
-      firebase_storage.Reference storageReference = firebase_storage
-          .FirebaseStorage.instance
-          .ref()
-          .child('videos/${DateTime.now()}.mp4');
-
-      firebase_storage.UploadTask uploadTask =
-      storageReference.putFile(videoFile);
-
-      await uploadTask.whenComplete(() => null);
-
-      String videoUrl = await storageReference.getDownloadURL();
-
-      await FirebaseFirestore.instance.collection('videos').add({
-        'url': videoUrl,
-        'user': 'doanthinh20@gmail.com',
-      });
-
-      setState(() {
-        _videos.add(videoUrl);
-      });
-
-      print('Video URL after upload: $videoUrl');
-    } catch (e) {
-      print('Error uploading video: $e');
-    }
   }
 }

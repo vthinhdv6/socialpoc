@@ -1,16 +1,11 @@
 import 'dart:io';
-
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
-
 import '../../model/video.dart';
 import 'profile_controller.dart';
 import 'package:chewie/chewie.dart';
-
-
 
 class VideoScreen extends StatelessWidget {
   @override
@@ -46,12 +41,12 @@ class VideoList extends StatelessWidget {
           children: <Widget>[
             controller!.value.isInitialized
                 ? Chewie(
-              controller: ChewieController(
-                videoPlayerController: controller,
-                autoPlay: true,
-                looping: true,
-              ),
-            )
+                    controller: ChewieController(
+                      videoPlayerController: controller,
+                      autoPlay: true,
+                      looping: true,
+                    ),
+                  )
                 : Container(),
             ElevatedButton(
               onPressed: () async {
@@ -64,7 +59,7 @@ class VideoList extends StatelessWidget {
                     print('Selected File Path: ${selectedFile.path}');
                     File videoFile = File(selectedFile.path!);
                     String? videoUrl = await videoController.uploadVideo(
-                        videoFile, videoController.userEmail);
+                        videoFile, videoController.userId);
                     print('Video URL  upload: $videoUrl');
                     if (videoUrl != null) {
                       print('Video URL after upload: $videoUrl');
@@ -94,7 +89,7 @@ class VideoList extends StatelessWidget {
                 itemCount: videos.length,
                 itemBuilder: (context, index) {
                   // Chỉ hiển thị video của người dùng đang đăng nhập
-                  if (videos[index].user == videoController.userEmail) {
+                  if (videoController.videos[index].user == videoController.userId) {
                     return ListTile(
                       title: Text('Video ${index + 1}'),
                       subtitle: Chewie(
@@ -114,7 +109,6 @@ class VideoList extends StatelessWidget {
                 },
               ),
             ),
-
           ],
         ),
       ),
