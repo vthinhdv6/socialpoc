@@ -27,6 +27,7 @@ class TikTokProfileScreen extends StatelessWidget {
   final PageController pageController = PageController();
 
   TikTokProfileScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,14 +40,43 @@ class TikTokProfileScreen extends StatelessWidget {
           Column(
             children: [
               const SizedBox(height: paddingDefault),
-              const CircleAvatar(
+               CircleAvatar(
                 radius: 40.0,
-                backgroundImage: NetworkImage('https://example.com/your_profile_image.jpg'),
+                backgroundImage:
+                    NetworkImage(videoController.avatarUrl),
+              ),
+              Positioned(
+                child: SizedBox(
+                  width: 30.0,
+                  height: 30.0,
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      FilePickerResult? result =
+                          await FilePicker.platform.pickFiles(
+                        type: FileType.image,
+                      );
+                      if (result != null && result.files.isNotEmpty) {
+                        final selectedFile = result.files.single;
+                        if (selectedFile.path != null) {
+                          print('Selected Image Path: ${selectedFile.path}');
+                          File imageFile = File(selectedFile.path!);
+                          String userId =
+                              FirebaseAuth.instance.currentUser?.uid ?? '';
+                          await videoController.uploadAvatar(imageFile, userId);
+                        } else {
+                          print('Error: selectedFile.path is null.');
+                        }
+                      }
+                    },
+                    child: Icon(Icons.camera_alt),
+                  ),
+                ),
               ),
               const Text(
                 '@Thuthao',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontWeight: FontWeight.w600, color: colorText2),
+                style:
+                    TextStyle(fontWeight: FontWeight.w600, color: colorText2),
               ),
               const SizedBox(height: 16.0),
               Row(
@@ -79,7 +109,8 @@ class TikTokProfileScreen extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(vertical: paddingDefault),
                 decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.only(topRight: Radius.circular(40)),
+                  borderRadius:
+                      BorderRadius.only(topRight: Radius.circular(40)),
                   color: Colors.white,
                 ),
                 child: Row(
@@ -110,7 +141,11 @@ class TikTokProfileScreen extends StatelessWidget {
                 height: 1,
               ),
               TabBarWidget(
-                tabViewWidget: const [Text("trang 1"), Text("trang 2"), Text('trang 3')],
+                tabViewWidget: const [
+                  Text("trang 1"),
+                  Text("trang 2"),
+                  Text('trang 3')
+                ],
                 textTitle: const ['1', '2', '3'],
                 pageController: pageController,
                 unselectLabelBackground: Colors.white,
@@ -118,29 +153,44 @@ class TikTokProfileScreen extends StatelessWidget {
             ],
           ),
           Expanded(
-            child: GetBuilder<VideoController>(
-              builder: (controller) => ListView.builder(
-                itemCount: controller.videos.length,
-                itemBuilder: (context, index) {
-                  if (controller.videos[index].user == FirebaseAuth.instance.currentUser?.uid) {
-                    return Container(
-                      height: 50.0,
-                      margin: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: Chewie(
-                        controller: ChewieController(
-                          videoPlayerController: VideoPlayerController.network(
-                            controller.videos[index].url,
-                          ),
-                          autoPlay: false,
-                          looping: false,
-                        ),
-                      ),
-                    );
-                  } else {
-                    return Container();
-                  }
-                },
-              ),
+            child: ListView.builder(
+              scrollDirection: Axis.vertical,
+              itemCount: (videoController.videos.length / 3).ceil(),
+              itemBuilder: (context, pageIndex) {
+                return SizedBox(
+                  height: 200.0,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: List.generate(
+                      3,
+                      (index) {
+                        final videoIndex = pageIndex * 3 + index;
+                        if (videoIndex < videoController.videos.length &&
+                            videoController.videos[videoIndex].user ==
+                                FirebaseAuth.instance.currentUser?.uid) {
+                          return Container(
+                            height: 150.0,
+                            width: MediaQuery.of(context).size.width / 3 - 3,
+                            margin: EdgeInsets.symmetric(horizontal: 0.7),
+                            child: Chewie(
+                              controller: ChewieController(
+                                videoPlayerController:
+                                    VideoPlayerController.network(
+                                  videoController.videos[videoIndex].url,
+                                ),
+                                autoPlay: false,
+                                looping: false,
+                              ),
+                            ),
+                          );
+                        } else {
+                          return Container();
+                        }
+                      },
+                    ),
+                  ),
+                );
+              },
             ),
           ),
           ElevatedButton(
