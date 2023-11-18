@@ -32,6 +32,10 @@ class TikTokProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        leading: const Icon(Icons.person),
+        backgroundColor: colorBackground,
+      ),
       backgroundColor: colorBackground2,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
