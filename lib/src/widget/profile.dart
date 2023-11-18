@@ -5,9 +5,9 @@ import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:video_player/video_player.dart';
 
-
-
 class VideoList extends StatefulWidget {
+  const VideoList({super.key});
+
   @override
   _VideoListState createState() => _VideoListState();
 }
@@ -30,8 +30,7 @@ class _VideoListState extends State<VideoList> {
     try {
       FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-      DocumentSnapshot userSnapshot =
-      await firestore.collection('user').doc(userName).get();
+      DocumentSnapshot userSnapshot = await firestore.collection('user').doc(userName).get();
 
       if (!userSnapshot.exists) {
         await firestore.collection('user').doc(userName).set({
@@ -39,13 +38,10 @@ class _VideoListState extends State<VideoList> {
         });
       }
 
-      firebase_storage.Reference storageReference = firebase_storage
-          .FirebaseStorage.instance
-          .ref()
-          .child('videos/${DateTime.now()}.mp4');
+      firebase_storage.Reference storageReference =
+          firebase_storage.FirebaseStorage.instance.ref().child('videos/${DateTime.now()}.mp4');
 
-      firebase_storage.UploadTask uploadTask =
-      storageReference.putFile(videoFile);
+      firebase_storage.UploadTask uploadTask = storageReference.putFile(videoFile);
 
       await uploadTask.whenComplete(() => null);
 
@@ -78,16 +74,16 @@ class _VideoListState extends State<VideoList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Video App'),
+        title: const Text('Video App'),
       ),
       body: Center(
         child: Column(
           children: <Widget>[
             _controller!.value.isInitialized
                 ? AspectRatio(
-              aspectRatio: _controller!.value.aspectRatio,
-              child: VideoPlayer(_controller!),
-            )
+                    aspectRatio: _controller!.value.aspectRatio,
+                    child: VideoPlayer(_controller!),
+                  )
                 : Container(),
             ElevatedButton(
               onPressed: () async {
@@ -99,15 +95,13 @@ class _VideoListState extends State<VideoList> {
                   if (selectedFile.path != null) {
                     print('Selected File Path: ${selectedFile.path}');
                     File videoFile = File(selectedFile.path!);
-                    String? videoUrl =
-                    await uploadVideo(videoFile, userName);
+                    String? videoUrl = await uploadVideo(videoFile, userName);
                     print('Video URL  upload: $videoUrl');
                     if (videoUrl != null) {
                       print('Video URL after upload: $videoUrl');
                       setState(() {
                         _videoUrl = videoUrl;
-                        _controller = VideoPlayerController.networkUrl(
-                            Uri.parse(videoUrl));
+                        _controller = VideoPlayerController.networkUrl(Uri.parse(videoUrl));
                         _controller!.initialize().then((_) {
                           setState(() {});
                         });
@@ -120,14 +114,13 @@ class _VideoListState extends State<VideoList> {
                   }
                 }
               },
-              child: Text('Upload Video'),
+              child: const Text('Upload Video'),
             ),
             ElevatedButton(
               onPressed: () async {
-
                 await updateUserName();
               },
-              child: Text('Update User Name'),
+              child: const Text('Update User Name'),
             ),
           ],
         ),

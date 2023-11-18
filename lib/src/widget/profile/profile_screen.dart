@@ -5,11 +5,16 @@ import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:chewie/chewie.dart';
+import 'package:socialpoc/common/contants.dart';
+import 'package:socialpoc/common/widget/buttonCommonWidget.dart';
+import 'package:socialpoc/common/widget/tab_bar_widget.dart';
 import 'package:video_player/video_player.dart';
 import 'package:get/get.dart';
 import 'profile_controller.dart';
 
 class Profile extends StatelessWidget {
+  const Profile({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -18,67 +23,109 @@ class Profile extends StatelessWidget {
     );
   }
 }
+
 class TikTokProfileScreen extends StatelessWidget {
   final VideoController videoController = Get.put(VideoController());
+  final PageController pageController = PageController();
 
+  TikTokProfileScreen({super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: colorBackground2,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Container(
-            padding: EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                CircleAvatar(
-                  radius: 40.0,
-                  backgroundImage: NetworkImage('https://example.com/your_profile_image.jpg'),
+          Column(
+            children: [
+              const SizedBox(height: paddingDefault),
+              const CircleAvatar(
+                radius: 40.0,
+                backgroundImage: NetworkImage('https://example.com/your_profile_image.jpg'),
+              ),
+              const Text(
+                '@Thuthao',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontWeight: FontWeight.w600, color: colorText2),
+              ),
+              const SizedBox(height: 16.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.3,
+                      child: const Text(
+                        '1\nĐang follow',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontWeight: FontWeight.w600),
+                      )),
+                  SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.3,
+                      child: const Text(
+                        '4\nFollow',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontWeight: FontWeight.w600),
+                      )),
+                  SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.3,
+                      child: const Text(
+                        '1\nYeu thich',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontWeight: FontWeight.w600),
+                      )),
+                ],
+              ),
+              const SizedBox(height: paddingDefault),
+              Container(
+                padding: const EdgeInsets.symmetric(vertical: paddingDefault),
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.only(topRight: Radius.circular(40)),
+                  color: Colors.white,
                 ),
-                SizedBox(height: 16.0),
-                Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Row(
-                      children: [
-                        Text('Đang follow'),
-                        Text('Follower'),
-                        Text('Thích'),
-                      ],
+                    ButtonCommonWidget(
+                      buttonText: 'Sửa hồ sơ',
+                      fontColor: colorText,
+                      onPressed: () {},
+                      backgroundColor: Colors.white,
+                      borderColor: colorText,
+                    ),
+                    ButtonCommonWidget(
+                      buttonText: 'Chia sẻ hồ sơ',
+                      onPressed: () {},
+                      borderColor: Colors.transparent,
+                    ),
+                    ButtonCommonWidget(
+                      buttonText: 'Follow +',
+                      onPressed: () {},
+                      borderColor: Colors.transparent,
                     ),
                   ],
                 ),
-                SizedBox(height: 8.0),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {},
-                      child: Text('Sửa hồ sơ'),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {},
-                      child: Text('Chia sẻ hồ sơ'),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {},
-                      child: Text('Thêm bạn'),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+              ),
+              const Divider(
+                color: colorBackground2,
+                height: 1,
+              ),
+              TabBarWidget(
+                tabViewWidget: const [Text("trang 1"), Text("trang 2"), Text('trang 3')],
+                textTitle: const ['1', '2', '3'],
+                pageController: pageController,
+                unselectLabelBackground: Colors.white,
+              )
+            ],
           ),
           Expanded(
             child: GetBuilder<VideoController>(
               builder: (controller) => ListView.builder(
                 itemCount: controller.videos.length,
                 itemBuilder: (context, index) {
-                  // Chỉ hiển thị video của người dùng đang đăng nhập
                   if (controller.videos[index].user == FirebaseAuth.instance.currentUser?.uid) {
                     return Container(
                       height: 50.0,
-                      margin: EdgeInsets.symmetric(vertical: 8.0),
+                      margin: const EdgeInsets.symmetric(vertical: 8.0),
                       child: Chewie(
                         controller: ChewieController(
                           videoPlayerController: VideoPlayerController.network(
@@ -113,9 +160,8 @@ class TikTokProfileScreen extends StatelessWidget {
                 }
               }
             },
-            child: Text('Chọn và Upload Video'),
+            child: const Text('Chọn và Upload Video'),
           ),
-
         ],
       ),
     );

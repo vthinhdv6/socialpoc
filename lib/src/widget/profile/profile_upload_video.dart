@@ -34,7 +34,7 @@ class VideoList extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Video App'),
+        title: const Text('Video App'),
       ),
       body: Center(
         child: Column(
@@ -58,8 +58,8 @@ class VideoList extends StatelessWidget {
                   if (selectedFile.path != null) {
                     print('Selected File Path: ${selectedFile.path}');
                     File videoFile = File(selectedFile.path!);
-                    String? videoUrl = await videoController.uploadVideo(
-                        videoFile, videoController.userId);
+                    String? videoUrl =
+                        await videoController.uploadVideo(videoFile, videoController.userId);
                     print('Video URL  upload: $videoUrl');
                     if (videoUrl != null) {
                       print('Video URL after upload: $videoUrl');
@@ -71,16 +71,16 @@ class VideoList extends StatelessWidget {
                   }
                 }
               },
-              child: Text('Upload Video'),
+              child: const Text('Upload Video'),
             ),
             ElevatedButton(
               onPressed: () async {
                 await videoController.updateUserName();
               },
-              child: Text('Update User Email'),
+              child: const Text('Update User Email'),
             ),
-            SizedBox(height: 16.0),
-            Text(
+            const SizedBox(height: 16.0),
+            const Text(
               'User Videos:',
               style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
             ),
