@@ -14,7 +14,9 @@ import '../../model/video.dart';
 class VideoController extends GetxController {
   VideoPlayerController? _controller;
   List<VideoModel> _videos = [];
-  String userId = '';
+  RxString _avatarUrl = ''.obs;
+
+  String get avatarUrl => _avatarUrl.value;
 
   VideoController() {
     _controller = VideoPlayerController.networkUrl(Uri.parse(''));
@@ -22,11 +24,17 @@ class VideoController extends GetxController {
       update();
     });
     _loadVideos();
+    _loadAvatarUrl();
   }
 
   VideoPlayerController? get controller => _controller;
 
   List<VideoModel> get videos => _videos;
+
+  void updateAvatarUrl(String url) {
+    _avatarUrl.value = url;
+  }
+
   Future<void> _loadVideos() async {
     final currentUser = FirebaseAuth.instance.currentUser;
     String userId = currentUser?.uid ?? '';
@@ -40,7 +48,7 @@ class VideoController extends GetxController {
     update();
   }
 
-  Future<String?> uploadVideo(File videoFile, String userId) async {
+  Future<void> uploadVideo(File videoFile, String userId) async {
     try {
       FirebaseFirestore firestore = FirebaseFirestore.instance;
 
@@ -71,20 +79,43 @@ class VideoController extends GetxController {
       });
 
       _loadVideos(); // Reload videos after upload
-      return videoUrl;
     } catch (e) {
       print('Error uploading video: $e');
-      return null;
     }
   }
 
-  Future<void> updateUserName() async {
+  Future<void> _loadAvatarUrl() async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    String userId = currentUser?.uid ?? '';
+    DocumentSnapshot userSnapshot =
+    await FirebaseFirestore.instance.collection('users').doc(userId).get();
+
+    if (userSnapshot.exists) {
+      _avatarUrl.value = userSnapshot['avatar'] ?? '';
+    }
+  }
+
+  Future<void> uploadAvatar(File avatarFile, String userId) async {
     try {
-      FirebaseFirestore firestore = FirebaseFirestore.instance;
-      await firestore.collection('user').doc(userId).update({'email': 'new_email@example.com'});
-      print('User email updated successfully.');
+      final currentUser = FirebaseAuth.instance.currentUser;
+      String userId = currentUser?.uid ?? '';
+      firebase_storage.Reference storageReference = firebase_storage
+          .FirebaseStorage.instance
+          .ref()
+          .child('avatars/$userId.jpg');
+
+      firebase_storage.UploadTask uploadTask =
+      storageReference.putFile(avatarFile);
+
+      await uploadTask.whenComplete(() async {
+        String avatarUrl = await storageReference.getDownloadURL();
+        await FirebaseFirestore.instance.collection('users').doc(userId).update({
+          'avatar': avatarUrl,
+        });
+        updateAvatarUrl(avatarUrl);
+      });
     } catch (e) {
-      print('Error updating user email: $e');
+      print('Error uploading avatar: $e');
     }
   }
 

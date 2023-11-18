@@ -20,6 +20,6 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   await FirebaseAppCheck.instance.activate();
-  runApp(LoginScreenMain());
+  runApp(MainScreen());
 }
 

@@ -2,8 +2,6 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:chewie/chewie.dart';
 import 'package:socialpoc/common/contants.dart';
 import 'package:socialpoc/common/widget/buttonCommonWidget.dart';
@@ -32,14 +30,12 @@ class TikTokProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: const Icon(Icons.person),
-        backgroundColor: colorBackground,
-      ),
-      backgroundColor: colorBackground2,
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
+        appBar: AppBar(
+          leading: const Icon(Icons.person),
+          backgroundColor: colorBackground,
+        ),
+        backgroundColor: colorBackground2,
+        body: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           Column(
             children: [
               const SizedBox(height: paddingDefault),
@@ -166,8 +162,6 @@ class TikTokProfileScreen extends StatelessWidget {
             },
             child: const Text('Chọn và Upload Video'),
           ),
-        ],
-      ),
-    );
+        ]));
   }
 }
