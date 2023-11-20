@@ -72,11 +72,24 @@ class TikTokProfileScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              const Text(
-                '@Thuthao',
-                textAlign: TextAlign.center,
-                style:
-                    TextStyle(fontWeight: FontWeight.w600, color: colorText2),
+              FutureBuilder<String?>(
+                future: videoController.getUserName(FirebaseAuth.instance.currentUser?.uid ?? ''),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    // Nếu đang đợi dữ liệu, hiển thị một widget loading hoặc placeholder
+                    return CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    // Nếu có lỗi khi lấy dữ liệu, hiển thị một thông báo lỗi
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    // Nếu thành công, hiển thị tên người dùng từ Firebase
+                    return Text(
+                      snapshot.data ?? '', // Nếu dữ liệu null, sử dụng giá trị mặc định
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontWeight: FontWeight.w600, color: colorText2),
+                    );
+                  }
+                },
               ),
               const SizedBox(height: 16.0),
               Row(

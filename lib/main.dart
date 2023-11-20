@@ -10,6 +10,8 @@ import 'package:socialpoc/src/widget/upvideo.dart';
 import 'firebase_options.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 
+import 'src/widget/addvideo/camera_screen.dart';
+import 'src/widget/addvideo/uploadvidep_screen.dart';
 import 'src/widget/home.dart';
 
 
@@ -20,6 +22,6 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   await FirebaseAppCheck.instance.activate();
-  runApp(MainScreen());
+  runApp(MainScreen ());
 }
 

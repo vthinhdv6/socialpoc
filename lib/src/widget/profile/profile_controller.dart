@@ -118,6 +118,31 @@ class VideoController extends GetxController {
       print('Error uploading avatar: $e');
     }
   }
+  Future<String?> getUserName(String userId) async {
+    try {
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+      // Thực hiện truy vấn để lấy thông tin tài khoản từ Firestore dựa trên userId
+      DocumentSnapshot userSnapshot = await firestore.collection('users').doc(userId).get();
+
+      // Kiểm tra xem có dữ liệu không
+      if (userSnapshot.exists) {
+        // Nếu có dữ liệu, lấy giá trị userName từ DocumentSnapshot
+        String userName = userSnapshot['userName'] ?? '';
+
+        // Trả về giá trị userName
+        return userName;
+      } else {
+        // Nếu không có dữ liệu, trả về giá trị mặc định hoặc null
+        return null;
+      }
+    } catch (e) {
+      // Xử lý lỗi nếu có
+      print('Error fetching userName: $e');
+      return null;
+    }
+  }
+
 
   @override
   void onClose() {

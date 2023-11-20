@@ -2,15 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:socialpoc/common/contants.dart';
 import 'package:socialpoc/common/widget/buttonCommonWidget.dart';
 import 'package:textfields/textfields.dart';
+import 'addvideo/showvideo_screen.dart';
+import 'package:video_player/video_player.dart';
+import 'package:chewie/chewie.dart';
+import 'dart:io';
 
 class UpLoadVideoScreen extends StatefulWidget {
-  const UpLoadVideoScreen({super.key});
+  final String? videoPath;
+
+  const UpLoadVideoScreen({Key? key, this.videoPath}) : super(key: key);
 
   @override
   State<UpLoadVideoScreen> createState() => _UpLoadVideoScreenState();
 }
 
 class _UpLoadVideoScreenState extends State<UpLoadVideoScreen> {
+  late VideoPlayerController _videoController;
+  late ChewieController _chewieController;
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -26,12 +35,10 @@ class _UpLoadVideoScreenState extends State<UpLoadVideoScreen> {
                     SizedBox(
                       width: MediaQuery.of(context).size.height,
                       height: MediaQuery.of(context).size.height * 0.5,
-                      child: const Expanded(
-                          child: Image(
-                        fit: BoxFit.cover,
-                        image: NetworkImage(
-                            'https://th.bing.com/th/id/R.a2cc3437b7c9183512532abec0a205e2?rik=rL98WTgQ7bIjRw&pid=ImgRaw&r=0'),
-                      )),
+                      child: Expanded(
+                        child: VideoPlayerScreen(
+                            videoPath: widget.videoPath ?? ''),
+                      ),
                     ),
                   ],
                 ),
@@ -41,7 +48,8 @@ class _UpLoadVideoScreenState extends State<UpLoadVideoScreen> {
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
-                        SizedBox(height: MediaQuery.of(context).size.height * 0.4),
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.4),
                         Container(
                           width: MediaQuery.of(context).size.width * 0.9,
                           height: MediaQuery.of(context).size.height * 0.45,
@@ -53,7 +61,8 @@ class _UpLoadVideoScreenState extends State<UpLoadVideoScreen> {
                                 color: colorText2.withOpacity(0.5),
                                 spreadRadius: 2,
                                 blurRadius: 4,
-                                offset: const Offset(0, 2), // changes the position of the shadow
+                                offset: const Offset(
+                                    0, 2), // changes the position of the shadow
                               ),
                             ],
                           ),
@@ -84,7 +93,7 @@ class _UpLoadVideoScreenState extends State<UpLoadVideoScreen> {
                                       children: [
                                         Expanded(
                                             child: ButtonCommonWidget(
-                                          buttonText: 'Up load video',
+                                          buttonText: 'Đăng',
                                           onPressed: () {},
                                           fontColor: colorBackground,
                                           backgroundColor: colorBg,
@@ -109,7 +118,8 @@ class _UpLoadVideoScreenState extends State<UpLoadVideoScreen> {
                                 width: double.infinity,
                                 padding: const EdgeInsets.all(paddingDefault),
                                 decoration: const BoxDecoration(
-                                  borderRadius: BorderRadius.only(topRight: Radius.circular(80)),
+                                  borderRadius: BorderRadius.only(
+                                      topRight: Radius.circular(80)),
                                   color: colorFillBox,
                                 ),
                                 child: Column(
@@ -117,7 +127,10 @@ class _UpLoadVideoScreenState extends State<UpLoadVideoScreen> {
                                     Row(
                                       children: [
                                         SizedBox(
-                                          width: MediaQuery.of(context).size.width * 0.2,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.2,
                                           child: const Text(
                                             'Time',
                                             style: TextStyle(
@@ -128,7 +141,8 @@ class _UpLoadVideoScreenState extends State<UpLoadVideoScreen> {
                                           ),
                                         ),
                                         Padding(
-                                          padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 8.0),
                                           child: Text(
                                             DateTime.now().toString(),
                                             style: const TextStyle(
@@ -157,3 +171,4 @@ class _UpLoadVideoScreenState extends State<UpLoadVideoScreen> {
     );
   }
 }
+
