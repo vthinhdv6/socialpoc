@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:socialpoc/src/widget/list-notification/list_notification_screen.dart';
 import 'package:socialpoc/src/widget/login.dart';
 import 'package:socialpoc/src/widget/login/login_email_screen.dart';
 import 'package:socialpoc/src/widget/login/login_screen.dart';
