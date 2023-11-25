@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
 import '../firebase/firestoreservice.dart';
-import '../model/video.dart';
+
+import '../model/videoModel.dart';
+import 'home_controller.dart';
 import 'profile/profile_controller.dart';
 import 'package:get/get.dart';
 
@@ -157,8 +159,11 @@ class VideoPlayerWidget extends StatefulWidget {
 class _VideoPlayerWidgetState extends State<VideoPlayerWidget> with AutomaticKeepAliveClientMixin {
   late VideoPlayerController _controller;
   final VideoController videoController = Get.put(VideoController());
+  final HomeController homeController = Get.put(HomeController());
   bool isVideoPlaying = true;
   bool isLiked = false;
+  int currentVideoIndex = 0;
+  List<VideoModel>? videos;
 
   @override
   bool get wantKeepAlive => true;
@@ -188,11 +193,19 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> with AutomaticKee
     });
   }
   void _onLike() {
-    setState(() {
-    // Toggle the like status
-    isLiked = !isLiked;
+    String userId = homeController.getCurrentUserId();
 
-    });
+    // Kiểm tra xem userId có tồn tại (người dùng đã đăng nhập) mới thực hiện like
+    if (userId.isNotEmpty && currentVideoIndex >= 0 && currentVideoIndex < videos!.length) {
+      // Lấy đối tượng VideoModel từ danh sách video tương ứng với index
+      VideoModel videoModel = videos![currentVideoIndex];
+
+      // Gọi hàm toggleLike từ HomeController và truyền đối tượng VideoModel
+      homeController.toggleLike(videoModel, userId);
+    } else {
+      
+    }
+
   }
 
   void _onComment() {
