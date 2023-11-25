@@ -42,7 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
             _currentIndex = index;
           });
         },
-        items: [
+        items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
@@ -81,7 +81,7 @@ class HomeTab extends StatelessWidget {
 class ProfileTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return const Center(
       child: Profile(),
     );
   }
@@ -90,7 +90,7 @@ class ProfileTab extends StatelessWidget {
 class TrashTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return const Center(
       child: Text('Trash Tab'),
     );
   }

@@ -6,6 +6,7 @@ class UserViewModel extends Equatable {
   final int age;
   final String userName;
   final String avatarUrl;
+  final String pass;
 
   const UserViewModel({
     required this.userId,
@@ -13,6 +14,7 @@ class UserViewModel extends Equatable {
     required this.age,
     required this.userName,
     required this.avatarUrl,
+    required this.pass,
   });
   @override
   // TODO: implement props
