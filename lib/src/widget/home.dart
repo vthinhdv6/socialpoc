@@ -4,6 +4,10 @@ import 'package:video_player/video_player.dart';
 
 import '../firebase/firestoreservice.dart';
 import '../model/video.dart';
+import 'profile/profile_controller.dart';
+import 'package:get/get.dart';
+
+import 'profile/profile_screen.dart';
 
 class VideoScreen extends StatelessWidget {
   const VideoScreen({super.key});
@@ -138,9 +142,13 @@ class _VideoListWidgetState extends State<VideoListWidget> with AutomaticKeepAli
 }
 
 class VideoPlayerWidget extends StatefulWidget {
+  final VideoController videoController = Get.put(VideoController());
   final String videoUrl;
 
-  const VideoPlayerWidget({super.key, required this.videoUrl});
+
+
+   VideoPlayerWidget({Key? key, required this.videoUrl})
+      : super(key: key);
 
   @override
   _VideoPlayerWidgetState createState() => _VideoPlayerWidgetState();
@@ -148,7 +156,9 @@ class VideoPlayerWidget extends StatefulWidget {
 
 class _VideoPlayerWidgetState extends State<VideoPlayerWidget> with AutomaticKeepAliveClientMixin {
   late VideoPlayerController _controller;
+  final VideoController videoController = Get.put(VideoController());
   bool isVideoPlaying = true;
+  bool isLiked = false;
 
   @override
   bool get wantKeepAlive => true;
@@ -177,6 +187,21 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> with AutomaticKee
       isVideoPlaying = !isVideoPlaying;
     });
   }
+  void _onLike() {
+    setState(() {
+    // Toggle the like status
+    isLiked = !isLiked;
+
+    });
+  }
+
+  void _onComment() {
+    // Handle comment button press
+  }
+
+  void _onShare() {
+    // Handle share button press
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -184,116 +209,108 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> with AutomaticKee
 
     return _controller.value.isInitialized
         ? SizedBox(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                InkWell(
-                  onTap: _onPlayPause,
-                  child: Positioned(
-                    child: FittedBox(
-                      alignment: Alignment.center,
-                      fit: BoxFit.cover,
-                      child: SizedBox(
-                        width: _controller.value.size.width,
-                        height: _controller.value.size.height,
-                        child: AspectRatio(
-                          aspectRatio: _controller.value.aspectRatio,
-                          child: VideoPlayer(_controller),
-                        ),
-                      ),
-                    ),
+      height: MediaQuery.of(context).size.height,
+      width: MediaQuery.of(context).size.width,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          InkWell(
+            onTap: _onPlayPause,
+            child: Positioned(
+              child: FittedBox(
+                alignment: Alignment.center,
+                fit: BoxFit.cover,
+                child: SizedBox(
+                  width: _controller.value.size.width,
+                  height: _controller.value.size.height,
+                  child: AspectRatio(
+                    aspectRatio: _controller.value.aspectRatio,
+                    child: VideoPlayer(_controller),
                   ),
                 ),
-                !isVideoPlaying
-                    ? const Positioned(
-                        child: Center(
-                          child: Icon(
-                            Icons.not_started_rounded,
-                            size: 80,
-                            color: Colors.white70,
-                          ),
-                        ),
-                      )
-                    : const SizedBox(),
-                Positioned(
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  child: VideoProgressIndicator(
-                    _controller,
-                    allowScrubbing: true,
-                    padding: const EdgeInsets.all(8.0),
-                  ),
-                ),
-                Positioned(
-                  top: 0,
-                  right: 0,
-                  bottom: 0,
-                  child: Transform.scale(
-                    scale: 1.5, // Điều chỉnh tỷ lệ gấp đôi
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+              ),
+            ),
+          ),
+          !isVideoPlaying
+              ? const Positioned(
+            child: Center(
+              child: Icon(
+                Icons.not_started_rounded,
+                size: 80,
+                color: Colors.white70,
+              ),
+            ),
+          )
+              : const SizedBox(),
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: VideoProgressIndicator(
+              _controller,
+              allowScrubbing: true,
+              padding: const EdgeInsets.all(8.0),
+            ),
+          ),
+          Positioned(
+            top: 0,
+            right: 0,
+            bottom: 0,
+            child: Transform.scale(
+              scale: 1.5,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      // Navigate to the profile screen when the avatar is tapped
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => Profile()),
+                      );
+                    },
+                    child: Stack(
                       children: [
-                        Container(
-                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(75)),
-                          height: 50,
-                          width: 50,
-                          child: const Stack(
-                            children: [
-                              CircleAvatar(
-                                radius: 23,
-                                backgroundColor: Colors.red,
-                                child: CircleAvatar(
-                                  radius: 20,
-                                  backgroundImage: NetworkImage(
-                                      'https://images.unsplash.com/photo-1597466765990-64ad1c35dafc'),
-                                ),
-                              ),
-                              Positioned(
-                                  bottom: 0,
-                                  child: Icon(
-                                    Icons.add_circle,
-                                    color: Colors.white70,
-                                  ))
-                            ],
+                        CircleAvatar(
+                          radius: 16,
+                          backgroundColor: Colors.red,
+                          child: CircleAvatar(
+                            radius: 14,
+                            backgroundImage: NetworkImage(videoController.avatarUrl),
                           ),
                         ),
-                        IconButton(
-                          onPressed: () {
-                            // Xử lý sự kiện khi nhấn nút tim
-                          },
-                          icon: const Icon(
-                            Icons.favorite,
-                            color: Colors.red,
-                          ),
-                        ),
-                        IconButton(
-                          onPressed: () {
-                            // Xử lý sự kiện khi nhấn nút comment
-                          },
-                          icon: const Icon(
-                            Icons.comment,
-                            color: Colors.white,
-                          ),
-                        ),
-                        IconButton(
-                          onPressed: () {
-                            // Xử lý sự kiện khi nhấn nút share
-                          },
-                          icon: const Icon(
-                            Icons.share,
-                            color: Colors.white,
-                          ),
-                        ),
+
                       ],
                     ),
                   ),
-                ),
-              ],
+                  IconButton(
+                    onPressed: _onLike,
+                    icon: Icon(
+                      Icons.favorite,
+                      color: isLiked ? Colors.red : Colors.white,
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: _onComment,
+                    icon: const Icon(
+                      Icons.comment,
+                      color: Colors.white,
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: _onShare,
+                    icon: const Icon(
+                      Icons.share,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          )
+          ),
+        ],
+      ),
+    )
         : const CircularProgressIndicator();
   }
 

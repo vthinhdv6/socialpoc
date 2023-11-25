@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../firebase/auth_service.dart';
@@ -23,6 +24,14 @@ class LoginController extends GetxController {
       } catch (e) {
         print('Đăng nhập thất bại: $e');
       }
+    }
+  }
+  Future<void> sendPasswordResetEmail(String email) async {
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+      Get.snackbar('Success', 'Password reset email sent to $email');
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to send password reset email: $e');
     }
   }
 }

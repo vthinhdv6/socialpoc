@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:socialpoc/src/widget/upvideo.dart';
 
+import 'addvideo/uploadvidep_screen.dart';
 import 'home.dart';
 import 'profile/profile_screen.dart';
 
@@ -54,14 +55,14 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: Icon(Icons.delete),
             label: 'Trash',
           ),
-          // BottomNavigationBarItem(
-          //   icon: Icon(Icons.mail),
-          //   label: 'Inbox', // Thêm item cho InboxTab
-          // ),
-          // BottomNavigationBarItem(
-          //   icon: Icon(Icons.add),
-          //   label: 'Add', // Thêm item cho AddTab
-          // ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.mail),
+            label: 'Inbox', // Thêm item cho InboxTab
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.add),
+            label: 'Add', // Thêm item cho AddTab
+          ),
         ],
       ),
     );
@@ -108,7 +109,7 @@ class AddTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: UpLoadVideoScreen(),
+      child: TikTokProfileScreen2(),
     );
   }
 }

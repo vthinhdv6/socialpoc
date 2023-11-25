@@ -67,27 +67,9 @@ class _TikTokProfileScreen1State extends State<TikTokProfileScreen1> {
                 }
               }
             },
-            child: const Text('Chọn và Hiển thị Video'),
+            child: const Text('Chọn File'),
           ),
-          ElevatedButton(
-            onPressed: () async {
-              FilePickerResult? result = await FilePicker.platform.pickFiles(
-                type: FileType.video,
-              );
-              if (result != null && result.files.isNotEmpty) {
-                final selectedFile = result.files.single;
-                if (selectedFile.path != null) {
-                  print('Selected File Path: ${selectedFile.path}');
-                  setState(() {
-                    _selectedVideoPath = selectedFile.path;
-                  });
-                } else {
-                  print('Error: selectedFile.path is null.');
-                }
-              }
-            },
-            child: const Text('Chọn và Upload Video'),
-          ),
+
           if (_selectedVideoPath != null)
             ElevatedButton(
               onPressed: () {
