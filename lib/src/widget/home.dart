@@ -1,76 +1,164 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
 import '../firebase/firestoreservice.dart';
 import '../model/video.dart';
+import 'profile/profile_controller.dart';
+import 'package:get/get.dart';
+
+import 'profile/profile_screen.dart';
 
 class VideoScreen extends StatelessWidget {
+  const VideoScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Dành cho bạn'),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      debugShowMaterialGrid: false,
+      home: Scaffold(
+        body: SafeArea(
+          child: Stack(
+            children: [
+              const VideoListWidget(),
+              SizedBox(
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text(
+                            'Following',
+                            style: TextStyle(fontSize: 20, color: Colors.white),
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Container(
+                            height: 20,
+                            width: 3,
+                            decoration: const BoxDecoration(
+                              color: Colors.white,
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          const Text(
+                            'For you',
+                            style: TextStyle(fontSize: 20, color: Colors.white),
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              )
+            ],
+          ),
+        ),
       ),
-      body: VideoListWidget(),
     );
   }
 }
 
 class VideoListWidget extends StatefulWidget {
+  const VideoListWidget({super.key});
+
   @override
   _VideoListWidgetState createState() => _VideoListWidgetState();
 }
 
-class _VideoListWidgetState extends State<VideoListWidget>
-    with AutomaticKeepAliveClientMixin {
+class _VideoListWidgetState extends State<VideoListWidget> with AutomaticKeepAliveClientMixin {
   final FirestoreService firestoreService = FirestoreService();
+  @override
+  void initState() {
+    loadListVideoWidget();
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   bool get wantKeepAlive => true;
-
+// list video khong thay doi
   List<VideoModel>? videos;
-
+  List<Widget> videoWidgets = [];
   @override
   Widget build(BuildContext context) {
     super.build(context);
 
-    return FutureBuilder(
-      future: firestoreService.getVideos(),
-      builder: (context, AsyncSnapshot<List<VideoModel>> snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator();
-        }
-
-        if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
-        }
-
-        videos = snapshot.data;
-
-        return ListView.builder(
-          itemCount: videos!.length,
-          itemBuilder: (context, index) {
-            return VideoPlayerWidget(videoUrl: videos![index].url);
+    return MaterialApp(
+      debugShowMaterialGrid: false,
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        body: FutureBuilder(
+          future: firestoreService.getVideos(),
+          builder: (context, AsyncSnapshot<List<VideoModel>> snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const CircularProgressIndicator();
+            }
+            if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            }
+            videos = snapshot.data;
+            return CarouselSlider.builder(
+                itemCount: videos!.length,
+                itemBuilder: (BuildContext context, int itemIndex, int pageViewIndex) => SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height,
+                    child: VideoPlayerWidget(videoUrl: videos![itemIndex].url)),
+                options: CarouselOptions(
+                  height: MediaQuery.of(context).size.height,
+                  viewportFraction: 1,
+                  initialPage: 0,
+                  enableInfiniteScroll: true,
+                  reverse: false,
+                  // autoPlay: true,
+                  // autoPlayCurve: Curves.fastOutSlowIn,
+                  enlargeCenterPage: true,
+                  enlargeFactor: 0.3,
+                  scrollDirection: Axis.vertical,
+                ));
           },
-        );
-      },
+        ),
+      ),
     );
+  }
+
+  Future<void> loadListVideoWidget() async {
+    videos?.forEach((element) {
+      videoWidgets.add(SizedBox(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          child: VideoPlayerWidget(videoUrl: element.url)));
+    });
   }
 }
 
 class VideoPlayerWidget extends StatefulWidget {
+  final VideoController videoController = Get.put(VideoController());
   final String videoUrl;
 
-  VideoPlayerWidget({required this.videoUrl});
+
+
+   VideoPlayerWidget({Key? key, required this.videoUrl})
+      : super(key: key);
 
   @override
   _VideoPlayerWidgetState createState() => _VideoPlayerWidgetState();
 }
 
-class _VideoPlayerWidgetState extends State<VideoPlayerWidget>
-    with AutomaticKeepAliveClientMixin {
+class _VideoPlayerWidgetState extends State<VideoPlayerWidget> with AutomaticKeepAliveClientMixin {
   late VideoPlayerController _controller;
-  bool isVideoPlaying = false;
+  final VideoController videoController = Get.put(VideoController());
+  bool isVideoPlaying = true;
+  bool isLiked = false;
 
   @override
   bool get wantKeepAlive => true;
@@ -99,80 +187,131 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget>
       isVideoPlaying = !isVideoPlaying;
     });
   }
+  void _onLike() {
+    setState(() {
+    // Toggle the like status
+    isLiked = !isLiked;
+
+    });
+  }
+
+  void _onComment() {
+    // Handle comment button press
+  }
+
+  void _onShare() {
+    // Handle share button press
+  }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
 
     return _controller.value.isInitialized
-        ? Stack(
-      children: [
-        AspectRatio(
-          aspectRatio: _controller.value.aspectRatio,
-          child: VideoPlayer(_controller),
-        ),
-        Positioned(
-          bottom: 0,
-          left: 0,
-          right: 0,
-          child: VideoProgressIndicator(
-            _controller,
-            allowScrubbing: true,
-            padding: EdgeInsets.all(8.0),
-          ),
-        ),
-        Positioned(
-          top: 0,
-          right: 0,
-          bottom: 0,
-          child: Transform.scale(
-            scale: 1.5, // Điều chỉnh tỷ lệ gấp đôi
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                IconButton(
-                  onPressed: _onPlayPause,
-                  icon: Icon(
-                    isVideoPlaying
-                        ? Icons.pause
-                        : Icons.play_arrow,
-                    color: Colors.white,
+        ? SizedBox(
+      height: MediaQuery.of(context).size.height,
+      width: MediaQuery.of(context).size.width,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          InkWell(
+            onTap: _onPlayPause,
+            child: Positioned(
+              child: FittedBox(
+                alignment: Alignment.center,
+                fit: BoxFit.cover,
+                child: SizedBox(
+                  width: _controller.value.size.width,
+                  height: _controller.value.size.height,
+                  child: AspectRatio(
+                    aspectRatio: _controller.value.aspectRatio,
+                    child: VideoPlayer(_controller),
                   ),
                 ),
-                IconButton(
-                  onPressed: () {
-                    // Xử lý sự kiện khi nhấn nút tim
-                  },
-                  icon: Icon(
-                    Icons.favorite,
-                    color: Colors.red,
-                  ),
-                ),
-                IconButton(
-                  onPressed: () {
-                    // Xử lý sự kiện khi nhấn nút comment
-                  },
-                  icon: Icon(
-                    Icons.comment,
-                    color: Colors.white,
-                  ),
-                ),
-                IconButton(
-                  onPressed: () {
-                    // Xử lý sự kiện khi nhấn nút share
-                  },
-                  icon: Icon(
-                    Icons.share,
-                    color: Colors.white,
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
-        ),
-      ],
+          !isVideoPlaying
+              ? const Positioned(
+            child: Center(
+              child: Icon(
+                Icons.not_started_rounded,
+                size: 80,
+                color: Colors.white70,
+              ),
+            ),
+          )
+              : const SizedBox(),
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: VideoProgressIndicator(
+              _controller,
+              allowScrubbing: true,
+              padding: const EdgeInsets.all(8.0),
+            ),
+          ),
+          Positioned(
+            top: 0,
+            right: 0,
+            bottom: 0,
+            child: Transform.scale(
+              scale: 1.5,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      // Navigate to the profile screen when the avatar is tapped
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => Profile()),
+                      );
+                    },
+                    child: Stack(
+                      children: [
+                        CircleAvatar(
+                          radius: 16,
+                          backgroundColor: Colors.red,
+                          child: CircleAvatar(
+                            radius: 14,
+                            backgroundImage: NetworkImage(videoController.avatarUrl),
+                          ),
+                        ),
+
+                      ],
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: _onLike,
+                    icon: Icon(
+                      Icons.favorite,
+                      color: isLiked ? Colors.red : Colors.white,
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: _onComment,
+                    icon: const Icon(
+                      Icons.comment,
+                      color: Colors.white,
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: _onShare,
+                    icon: const Icon(
+                      Icons.share,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
     )
-        : CircularProgressIndicator();
+        : const CircularProgressIndicator();
   }
 
   @override

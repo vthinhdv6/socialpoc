@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import 'login_email_screen.dart';
+import 'register_email_screen.dart';
 
 class LoginScreen extends StatelessWidget {
   @override
@@ -31,7 +35,7 @@ class ShynLoginScreen extends StatelessWidget {
             // Nút Số điện thoại/Email với icon và phông trắng
             ElevatedButton.icon(
               onPressed: () {
-                // Xử lý khi nhấn nút Số điện thoại/Email
+                Get.to(() => LoginScreen());
               },
               icon: Icon(Icons.person, color: Colors.black),
               label: Text(
@@ -61,7 +65,7 @@ class ShynLoginScreen extends StatelessWidget {
             // Nút Đăng ký
             TextButton(
               onPressed: () {
-                // Xử lý khi nhấn nút Đăng ký
+                Get.off(() => Register());
               },
               child: Text('Bạn không có tài khoản? Đăng ký'),
             ),

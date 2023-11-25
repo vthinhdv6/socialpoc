@@ -44,38 +44,38 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyD-c_uCO26Qcpt0ClB3rZ_tzOOixSafud4',
-    appId: '1:340331847105:web:c05a5baeed12361c58a340',
-    messagingSenderId: '340331847105',
-    projectId: 'myproject-d2bf0',
-    authDomain: 'myproject-d2bf0.firebaseapp.com',
-    storageBucket: 'myproject-d2bf0.appspot.com',
-    measurementId: 'G-YM4E35MMCD',
+    apiKey: 'AIzaSyB4irrYor_ovsqnX604NkAKoXIHCLgAqx4',
+    appId: '1:317704986009:web:0bccf66af1fd79a4e30708',
+    messagingSenderId: '317704986009',
+    projectId: 'proud-lead-392506',
+    authDomain: 'proud-lead-392506.firebaseapp.com',
+    storageBucket: 'proud-lead-392506.appspot.com',
+    measurementId: 'G-0G28M4RK6N',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCMKu1zdBzufNC4u38BsUv66wJ4MRxTeds',
-    appId: '1:340331847105:android:0deb15d49b38efa258a340',
-    messagingSenderId: '340331847105',
-    projectId: 'myproject-d2bf0',
-    storageBucket: 'myproject-d2bf0.appspot.com',
+    apiKey: 'AIzaSyDMQJI6OBZIwToDBt8n5inFxDEaOQS3ehM',
+    appId: '1:317704986009:android:e0eccb65376cc4d9e30708',
+    messagingSenderId: '317704986009',
+    projectId: 'proud-lead-392506',
+    storageBucket: 'proud-lead-392506.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBK-dKxCB697xe17wN9OxQqD4cWORi4xZg',
-    appId: '1:340331847105:ios:aff4ec5ebddd384158a340',
-    messagingSenderId: '340331847105',
-    projectId: 'myproject-d2bf0',
-    storageBucket: 'myproject-d2bf0.appspot.com',
+    apiKey: 'AIzaSyBYzlBOpHBwnr9-fE-00H36wVsNYb3vrBI',
+    appId: '1:317704986009:ios:e270be77ff2493efe30708',
+    messagingSenderId: '317704986009',
+    projectId: 'proud-lead-392506',
+    storageBucket: 'proud-lead-392506.appspot.com',
     iosBundleId: 'com.example.socialpoc',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyBK-dKxCB697xe17wN9OxQqD4cWORi4xZg',
-    appId: '1:340331847105:ios:f851f6eaff22d77158a340',
-    messagingSenderId: '340331847105',
-    projectId: 'myproject-d2bf0',
-    storageBucket: 'myproject-d2bf0.appspot.com',
+    apiKey: 'AIzaSyBYzlBOpHBwnr9-fE-00H36wVsNYb3vrBI',
+    appId: '1:317704986009:ios:4396f4d8cef96610e30708',
+    messagingSenderId: '317704986009',
+    projectId: 'proud-lead-392506',
+    storageBucket: 'proud-lead-392506.appspot.com',
     iosBundleId: 'com.example.socialpoc.RunnerTests',
   );
 }

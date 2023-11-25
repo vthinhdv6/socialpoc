@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:socialpoc/src/widget/upvideo.dart';
 
+import 'addvideo/uploadvidep_screen.dart';
 import 'home.dart';
 import 'profile/profile_screen.dart';
-
-
 
 class MainScreen extends StatelessWidget {
   @override
@@ -26,12 +26,14 @@ class _HomeScreenState extends State<HomeScreen> {
     HomeTab(),
     ProfileTab(),
     TrashTab(),
+    InboxTab(), // Thêm InboxTab
+    AddTab(),   // Thêm AddTab
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
+      backgroundColor: Colors.transparent,
       body: _screens[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
@@ -52,6 +54,14 @@ class _HomeScreenState extends State<HomeScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.delete),
             label: 'Trash',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.mail),
+            label: 'Inbox', // Thêm item cho InboxTab
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.add),
+            label: 'Add', // Thêm item cho AddTab
           ),
         ],
       ),
@@ -82,6 +92,24 @@ class TrashTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Center(
       child: Text('Trash Tab'),
+    );
+  }
+}
+
+class InboxTab extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text('Inbox Tab'),
+    );
+  }
+}
+
+class AddTab extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: TikTokProfileScreen2(),
     );
   }
 }
