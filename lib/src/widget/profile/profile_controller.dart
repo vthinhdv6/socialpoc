@@ -91,7 +91,7 @@ class VideoController extends GetxController {
     await FirebaseFirestore.instance.collection('users').doc(userId).get();
 
     if (userSnapshot.exists) {
-      _avatarUrl.value = userSnapshot['avatar'] ?? '';
+      _avatarUrl.value = userSnapshot['avatarUrl'] ?? '';
     }
   }
 
