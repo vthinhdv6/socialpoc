@@ -24,6 +24,7 @@ class _FirestoreExampleState extends State<FirestoreExample> {
         'userId': 'exampleUserId1',
         'followers': [],
         'following': [],
+        'age': 20,
         'videos': [],
         'likedVideos': [],
       });

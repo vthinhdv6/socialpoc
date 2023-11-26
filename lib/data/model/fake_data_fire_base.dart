@@ -33,7 +33,6 @@ UserModel generateFakeUser() {
   const avatarUrl = 'https://th.bing.com/th/id/OIP.tyKHoj6bosTXEOY9hUFz7QHaHa?rs=1&pid=ImgDetMain';
   const List<String> listStringContent = ['null'];
   return UserModel(
-    userId: userId,
     email: email,
     age: age,
     userName: userName,
