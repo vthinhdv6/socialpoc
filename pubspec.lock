@@ -33,8 +33,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.1"
-<<<<<<< HEAD
-=======
   camera:
     dependency: "direct main"
     description:
@@ -75,7 +73,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.3.2+3"
->>>>>>> c8ae08672f19bce6cb5a92c55cf85e7340bdf79d
   carousel_slider:
     dependency: "direct main"
     description:

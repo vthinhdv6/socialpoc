@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "317704986009",
-    "project_id": "proud-lead-392506",
-    "storage_bucket": "proud-lead-392506.appspot.com"
+    "project_number": "318035904995",
+    "project_id": "project1-e1b0b",
+    "storage_bucket": "project1-e1b0b.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:317704986009:android:e0eccb65376cc4d9e30708",
+        "mobilesdk_app_id": "1:318035904995:android:dc6fb0c43631e0962db8d6",
         "android_client_info": {
           "package_name": "com.example.socialpoc"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDMQJI6OBZIwToDBt8n5inFxDEaOQS3ehM"
+          "current_key": "AIzaSyBsjKLyum87rZSQ4AazPKX7TkyC_jtCX-I"
         }
       ],
       "services": {

@@ -4,8 +4,8 @@ class VideoModel {
   final String videoId;
   final String userId; // Khóa ngoại tới bảng Users
   final String title;
-  final String content;
-  final int likes;
+  final String url;
+  int likes;
   final List<CommentModel> comments;
   final DateTime uploadTime;
 
@@ -13,7 +13,7 @@ class VideoModel {
     required this.videoId,
     required this.userId,
     required this.title,
-    required this.content,
+    required this.url,
     required this.likes,
     required this.comments,
     required this.uploadTime,
@@ -25,7 +25,7 @@ class VideoModel {
       videoId: data['videoId'],
       userId: data['userId'],
       title: data['title'],
-      content: data['content'],
+      url: data['url'],
       likes: data['likes'],
       comments: List<CommentModel>.from(
         (data['comments'] ?? []).map((comment) => CommentModel.fromMap(comment)),
@@ -40,7 +40,7 @@ class VideoModel {
       'videoId': videoId,
       'userId': userId,
       'title': title,
-      'content': content,
+      'url': url,
       'likes': likes,
       'comments': comments.map((comment) => comment.toMap()).toList(),
       'uploadTime': uploadTime,

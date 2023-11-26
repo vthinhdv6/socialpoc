@@ -45,14 +45,12 @@ dependencies:
   textfields: ^0.0.3
   equatable: ^2.0.5
   expandable_page_view: ^1.0.17
-<<<<<<< HEAD
-  carousel_slider: ^4.2.1
-=======
+
   camera: ^0.10.5+5
   path_provider: ^2.1.1
   carousel_slider: ^4.2.1
 
->>>>>>> c8ae08672f19bce6cb5a92c55cf85e7340bdf79d
+
 
 dev_dependencies:
   flutter_test:

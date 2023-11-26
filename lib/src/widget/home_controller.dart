@@ -1,14 +1,16 @@
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-class VideoController extends GetxController {
+import '../model/videoModel.dart';
+
+class HomeController extends GetxController {
   var isLiked = false.obs;
 
-  void toggleLike(String videoId, String userId) async {
-    // Kiểm tra xem người dùng đã like video chưa
+  void toggleLike(VideoModel video, String userId) async {
     DocumentSnapshot likeSnapshot = await FirebaseFirestore.instance
         .collection('likes')
-        .doc(videoId)
+        .doc(video.videoId)
         .collection('users')
         .doc(userId)
         .get();
@@ -17,7 +19,7 @@ class VideoController extends GetxController {
       // Nếu đã like, hủy like
       await FirebaseFirestore.instance
           .collection('likes')
-          .doc(videoId)
+          .doc(video.videoId)
           .collection('users')
           .doc(userId)
           .delete();
@@ -26,7 +28,7 @@ class VideoController extends GetxController {
       // Nếu chưa like, thực hiện like
       await FirebaseFirestore.instance
           .collection('likes')
-          .doc(videoId)
+          .doc(video.videoId)
           .collection('users')
           .doc(userId)
           .set({
@@ -35,4 +37,33 @@ class VideoController extends GetxController {
       isLiked.value = true;
     }
   }
+
+  String getCurrentUserId() {
+    User? user = FirebaseAuth.instance.currentUser;
+    return user?.uid ?? '';
+  }
+
+  Future<List<VideoModel>> getVideos() async {
+    CollectionReference videosCollection = FirebaseFirestore.instance.collection('videos');
+    QuerySnapshot querySnapshot = await videosCollection.get();
+    List<VideoModel> videos = [];
+
+    for (QueryDocumentSnapshot doc in querySnapshot.docs) {
+      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+      videos.add(VideoModel(
+        videoId: data['videoId'],
+        userId: data['userId'],
+        title: data['title'],
+        url: data['url'],
+        likes: data['likes'],
+        comments: List<CommentModel>.from(
+          (data['comments'] ?? []).map((comment) => CommentModel.fromMap(comment)),
+        ),
+        uploadTime: (data['uploadTime'] as Timestamp).toDate(),
+      ));
+    }
+
+    return videos;
+  }
+
 }

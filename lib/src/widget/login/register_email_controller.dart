@@ -54,7 +54,7 @@ class RegisterEmailController extends GetxController {
         'following': ['null'],
         'videos': ['null'],
         'likedVideos': ['null'],
-        'username':'@notset',
+        'username':'@notset'
         // Add more fields as needed
       });
 
