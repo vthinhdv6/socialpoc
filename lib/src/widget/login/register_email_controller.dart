@@ -48,10 +48,10 @@ class RegisterEmailController extends GetxController {
           .doc(userCredential.user!.uid)
           .set({
         'email': emailController.text,
-        'followers': [],
-        'following': [],
-        'videos': [],
-        'likedVideos': [],
+        'followers': ['null'],
+        'following': ['null'],
+        'videos': ['null'],
+        'likedVideos': ['null'],
         // Add more fields as needed
       });
 

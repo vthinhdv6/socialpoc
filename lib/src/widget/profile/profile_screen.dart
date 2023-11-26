@@ -62,7 +62,9 @@ class TikTokProfileScreen extends StatelessWidget {
                           File imageFile = File(selectedFile.path!);
                           String userId =
                               FirebaseAuth.instance.currentUser?.uid ?? '';
+                          print('userId $userId'  );
                           await videoController.uploadAvatar(imageFile, userId);
+
                         } else {
                           print('Error: selectedFile.path is null.');
                         }
