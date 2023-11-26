@@ -47,11 +47,14 @@ class RegisterEmailController extends GetxController {
           .collection('users')
           .doc(userCredential.user!.uid)
           .set({
+        'age':20,
+        'avatarUrl':'https://th.bing.com/th/id/OIP.tyKHoj6bosTXEOY9hUFz7QHaHa?rs=1&pid=ImgDetMain',
         'email': emailController.text,
-        'followers': [],
-        'following': [],
-        'videos': [],
-        'likedVideos': [],
+        'followers': ['null'],
+        'following': ['null'],
+        'videos': ['null'],
+        'likedVideos': ['null'],
+        'username':'@notset',
         // Add more fields as needed
       });
 
