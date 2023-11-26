@@ -110,7 +110,7 @@ class VideoController extends GetxController {
       await uploadTask.whenComplete(() async {
         String avatarUrl = await storageReference.getDownloadURL();
         await FirebaseFirestore.instance.collection('users').doc(userId).update({
-          'avatar': avatarUrl,
+          'avatarUrl': avatarUrl,
         });
         updateAvatarUrl(avatarUrl);
       });

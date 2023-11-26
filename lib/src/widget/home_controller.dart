@@ -6,6 +6,7 @@ import '../model/videoModel.dart';
 
 class HomeController extends GetxController {
   var isLiked = false.obs;
+  var avatarUrl = ''.obs;
 
   void toggleLike(VideoModel video, String userId) async {
     DocumentSnapshot likeSnapshot = await FirebaseFirestore.instance
@@ -64,6 +65,25 @@ class HomeController extends GetxController {
     }
 
     return videos;
+  }
+  Future<String> getAvatarUrl(String userId) async {
+    try {
+      DocumentSnapshot<Map<String, dynamic>> userSnapshot =
+      await FirebaseFirestore.instance.collection('users').doc(userId).get();
+
+      if (userSnapshot.exists) {
+        return userSnapshot.data()!['avatarUrl'] ?? '';
+      } else {
+        return ''; // Default avatar URL or handle the absence of the user
+      }
+    } catch (error) {
+      print('Error getting avatar URL: $error');
+      return ''; // Default avatar URL or handle the error
+    }
+  }
+  Future<void> updateAvatarUrl(String userId) async {
+    String newAvatarUrl = await Get.find<HomeController>().getAvatarUrl(userId);
+    avatarUrl.value = newAvatarUrl;
   }
 
 }
