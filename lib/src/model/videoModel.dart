@@ -5,7 +5,7 @@ class VideoModel {
   final String userId; // Khóa ngoại tới bảng Users
   final String title;
   final String url;
-  final int likes;
+  int likes;
   final List<CommentModel> comments;
   final DateTime uploadTime;
 

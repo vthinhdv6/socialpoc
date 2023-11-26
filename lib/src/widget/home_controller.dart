@@ -7,9 +7,7 @@ import '../model/videoModel.dart';
 class HomeController extends GetxController {
   var isLiked = false.obs;
 
-  // Hàm xử lý like/dislike
   void toggleLike(VideoModel video, String userId) async {
-    // Kiểm tra xem người dùng đã like video chưa
     DocumentSnapshot likeSnapshot = await FirebaseFirestore.instance
         .collection('likes')
         .doc(video.videoId)

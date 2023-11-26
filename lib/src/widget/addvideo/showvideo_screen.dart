@@ -50,7 +50,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => UpLoadVideoScreen(),
+                      builder: (context) => UpLoadVideoScreen(videoPath: widget.videoPath),
                     ),
                   );
                 },
