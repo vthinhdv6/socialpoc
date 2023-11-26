@@ -1,4 +1,3 @@
-import 'dart:ffi';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -8,6 +7,7 @@ import 'package:chewie/chewie.dart';
 import 'package:socialpoc/common/contants.dart';
 import 'package:socialpoc/common/widget/buttonCommonWidget.dart';
 import 'package:socialpoc/common/widget/tab_bar_widget.dart';
+import 'package:socialpoc/data/model/fake_data_fire_base.dart';
 import 'package:socialpoc/src/model/UserModel.dart';
 import 'package:video_player/video_player.dart';
 import 'package:get/get.dart';
@@ -40,6 +40,7 @@ class _TikTokProfileScreenState extends State<TikTokProfileScreen> {
   bool isEditingName = false;
 
   Future<UserModel> fetchUserInformation() async {
+    userCurrent = generateFakeUser();
     final CollectionReference usersCollection = FirebaseFirestore.instance.collection('users');
     final DocumentSnapshot documentSnapshot =
         await usersCollection.doc(FirebaseAuth.instance.currentUser?.uid).get();
@@ -119,8 +120,8 @@ class _TikTokProfileScreenState extends State<TikTokProfileScreen> {
                                   print('Selected Image Path: ${selectedFile.path}');
                                   File imageFile = File(selectedFile.path!);
                                   String userId = FirebaseAuth.instance.currentUser?.uid ?? '';
-                                  print("usercr" + userId);
                                   await videoController.uploadAvatar(imageFile, userId);
+                                  setState(() {});
                                 } else {
                                   print('Error: selectedFile.path is null.');
                                 }
@@ -132,26 +133,6 @@ class _TikTokProfileScreenState extends State<TikTokProfileScreen> {
                       ),
                     ),
                   ]),
-                  // FutureBuilder<String?>(
-                  //   future:
-                  //       videoController.getUserName(FirebaseAuth.instance.currentUser?.uid ?? ''),
-                  //   builder: (context, snapshot) {
-                  //     if (snapshot.connectionState == ConnectionState.waiting) {
-                  //       // Nếu đang đợi dữ liệu, hiển thị một widget loading hoặc placeholder
-                  //       return const CircularProgressIndicator();
-                  //     } else if (snapshot.hasError) {
-                  //       // Nếu có lỗi khi lấy dữ liệu, hiển thị một thông báo lỗi
-                  //       return Text('Error: ${snapshot.error}');
-                  //     } else {
-                  //       // Nếu thành công, hiển thị tên người dùng từ Firebase
-                  //       return Text(
-                  //         snapshot.data ?? '', // Nếu dữ liệu null, sử dụng giá trị mặc định
-                  //         textAlign: TextAlign.center,
-                  //         style: const TextStyle(fontWeight: FontWeight.w600, color: colorText2),
-                  //       );
-                  //     }
-                  //   },
-                  // ),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -259,7 +240,7 @@ class _TikTokProfileScreenState extends State<TikTokProfileScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         ButtonCommonWidget(
-                          buttonText: 'Sửa hồ sơ',
+                          buttonText: 'Thông báo',
                           fontColor: colorText,
                           onPressed: () {},
                           backgroundColor: Colors.white,
