@@ -9,6 +9,7 @@ import 'package:socialpoc/common/widget/buttonCommonWidget.dart';
 import 'package:socialpoc/common/widget/tab_bar_widget.dart';
 import 'package:socialpoc/data/model/fake_data_fire_base.dart';
 import 'package:socialpoc/src/model/UserModel.dart';
+import 'package:socialpoc/src/widget/list_of_following/list_of_following.dart';
 import 'package:video_player/video_player.dart';
 import 'package:get/get.dart';
 import 'profile_controller.dart';
@@ -208,17 +209,23 @@ class _TikTokProfileScreenState extends State<TikTokProfileScreen> {
                     children: [
                       SizedBox(
                           width: MediaQuery.of(context).size.width * 0.3,
-                          child: const Text(
-                            '1\nĐang follow',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontWeight: FontWeight.w600),
+                          child:  InkWell(
+                            onTap: changeToListFollow,
+                            child: Text(
+                              '${userCurrent.followers.length -1} \nĐang follow',
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(fontWeight: FontWeight.w600),
+                            ),
                           )),
                       SizedBox(
                           width: MediaQuery.of(context).size.width * 0.3,
-                          child: const Text(
-                            '4\nFollow',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontWeight: FontWeight.w600),
+                          child:  InkWell(
+                            onTap: changeToListFollow,
+                            child: Text(
+                              '${userCurrent.following.length -1}\nFollow',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontWeight: FontWeight.w600),
+                            ),
                           )),
                       SizedBox(
                           width: MediaQuery.of(context).size.width * 0.3,
@@ -338,4 +345,9 @@ class _TikTokProfileScreenState extends State<TikTokProfileScreen> {
       ),
     );
   }
+  void changeToListFollow() {
+    Navigator.push(context, MaterialPageRoute(builder: (context)=> ContactInformationIntime(userCurrentModel: userCurrent, numberCountFollowers: userCurrent.followers.length -1,)));
+  }
 }
+
+

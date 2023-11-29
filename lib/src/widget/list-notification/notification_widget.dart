@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:socialpoc/data/model/notification_model.dart';
+import 'package:socialpoc/src/model/UserModel.dart';
 
 class NotificationWidget extends StatelessWidget {
    const NotificationWidget({super.key, required this.notification});
