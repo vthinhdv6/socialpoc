@@ -25,11 +25,9 @@ List<CommentModel> fakeDataFollow() {
 
 UserModel generateFakeUser() {
   final random = Random();
-
-  final userId = 'user_${random.nextInt(100)}';
   const email = 'thuthao1110@gmail.com';
   const age = 21;
-  const userName = 'thaonguyen';
+  const userName = 'default';
   const avatarUrl = 'https://th.bing.com/th/id/OIP.tyKHoj6bosTXEOY9hUFz7QHaHa?rs=1&pid=ImgDetMain';
   const List<String> listStringContent = ['null'];
   return UserModel(
