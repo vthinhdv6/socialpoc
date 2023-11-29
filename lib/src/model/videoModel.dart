@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:socialpoc/src/model/CommentModel.dart';
 
 class VideoModel {
   final String videoId;
@@ -48,32 +49,3 @@ class VideoModel {
   }
 }
 
-class CommentModel {
-  final String userId;
-  final String comment;
-  final DateTime timestamp;
-
-  CommentModel({
-    required this.userId,
-    required this.comment,
-    required this.timestamp,
-  });
-
-  // Factory constructor để tạo đối tượng từ dữ liệu Firebase
-  factory CommentModel.fromMap(Map<String, dynamic> data) {
-    return CommentModel(
-      userId: data['userId'],
-      comment: data['comment'],
-      timestamp: (data['timestamp'] as Timestamp).toDate(),
-    );
-  }
-
-  // Chuyển đối tượng thành Map để lưu trữ trong Firebase
-  Map<String, dynamic> toMap() {
-    return {
-      'userId': userId,
-      'comment': comment,
-      'timestamp': timestamp,
-    };
-  }
-}

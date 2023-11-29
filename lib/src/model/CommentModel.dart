@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class CommentModel {
   final String commentId; // Primary Key
   final String videoId; // Khóa ngoại tới bảng Videos
@@ -20,7 +22,9 @@ class CommentModel {
       videoId: data['videoId'],
       userId: data['userId'],
       content: data['content'],
-      commentTime: DateTime.parse(data['commentTime']),
+      commentTime: (data['commentTime'] is Timestamp)
+          ? (data['commentTime'] as Timestamp).toDate()
+          : DateTime.parse(data['commentTime']),
     );
   }
 

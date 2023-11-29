@@ -3,6 +3,7 @@ import 'package:socialpoc/src/widget/upvideo.dart';
 
 import 'addvideo/uploadvidep_screen.dart';
 import 'home.dart';
+import 'list-notification/chat_screen.dart';
 import 'profile/profile_screen.dart';
 
 class MainScreen extends StatelessWidget {
@@ -100,7 +101,7 @@ class InboxTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Text('Inbox Tab'),
+      child: ChatScreen(),
     );
   }
 }

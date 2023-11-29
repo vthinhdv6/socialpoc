@@ -3,6 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
+
+import '../comment/comment_screen.dart';
 import '../firebase/firestoreservice.dart';
 
 import '../model/videoModel.dart';
@@ -82,6 +84,8 @@ class _VideoListWidgetState extends State<VideoListWidget>
     with AutomaticKeepAliveClientMixin {
   final FirestoreService firestoreService = FirestoreService();
   late Future<List<VideoModel>> futureVideos;
+  final HomeController homeController = Get.put(HomeController());
+
 
   @override
   void initState() {
@@ -120,8 +124,9 @@ class _VideoListWidgetState extends State<VideoListWidget>
                 child: VideoPlayerWidget(
                   videoUrl: videos[itemIndex].url,
                   videos: videos,
-                  // Pass the videos list to VideoPlayerWidget
-                  currentIndex: itemIndex, // Pass the current index
+                  avatarUrl: homeController.avatarUrl.value,
+                  currentIndex: itemIndex,
+                  video: videos[itemIndex],
                 ),
               ),
               options: CarouselOptions(
@@ -147,12 +152,17 @@ class VideoPlayerWidget extends StatefulWidget {
   final String videoUrl;
   final List<VideoModel> videos;
   final int currentIndex;
+  final String avatarUrl;
+  final VideoModel video;
+
 
   VideoPlayerWidget(
       {Key? key,
       required this.videoUrl,
       required this.videos,
-      required this.currentIndex})
+      required this.currentIndex,
+      required this.avatarUrl,
+        required this.video,})
       : super(key: key);
 
   @override
@@ -168,6 +178,9 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget>
   bool isLiked = false;
   int currentVideoIndex = 2;
   List<VideoModel>? videos;
+  String videoUserId = '';
+  late Future<String> avatarUrlFuture;
+  late String mutableAvatarUrl = '';
 
   @override
   bool get wantKeepAlive => true;
@@ -184,9 +197,34 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget>
           print('Video initialization failed.');
         }
       });
-  }
+    homeController.getUserInfoAndUpdateAvatar();
+    homeController.avatarUrl.listen((newAvatarUrl) {
+      setState(() {
+        mutableAvatarUrl = newAvatarUrl;
+      });
+    });
+    if (widget.currentIndex >= 0 && widget.currentIndex < widget.videos.length) {
+      videoUserId = widget.videos[widget.currentIndex].userId;
+    }
 
+    // Fetch avatarUrl for the video user
+    fetchAvatarUrlForVideoUser();
+  }
+  Future<void> fetchAvatarUrlForVideoUser() async {
+    try {
+      // Move this line inside the initState method
+      String avatarUrl = await homeController.getAvatarUrl(videoUserId);
+      setState(() {
+        mutableAvatarUrl = avatarUrl;
+      });
+    } catch (error) {
+      print('Error fetching avatar URL for video user: $error');
+    }
+  }
   void _onPlayPause() {
+    print('Avatar URL: ${homeController.avatarUrl.value}');
+
+    print('Video User ID: $videoUserId');
     if (isVideoPlaying) {
       _controller.pause();
     } else {
@@ -238,8 +276,17 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget>
 
 
   void _onComment() {
-    // Handle comment button press
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CommentScreen(
+          video: widget.video,
+          avatarUrl: widget.avatarUrl,
+        ),
+      ),
+    );
   }
+
 
   void _onShare() {
     // Handle share button press
@@ -319,7 +366,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget>
                                 child: CircleAvatar(
                                   radius: 14,
                                   backgroundImage:
-                                      NetworkImage(videoController.avatarUrl),
+                                      NetworkImage(mutableAvatarUrl),
                                 ),
                               ),
                             ],

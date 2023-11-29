@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../model/CommentModel.dart';
 import '../model/videoModel.dart'; // Đảm bảo bạn đã import đúng đường dẫn
 
 class FirestoreService {

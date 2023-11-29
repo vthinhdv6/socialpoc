@@ -1,4 +1,3 @@
-// ChatController.dart
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -30,11 +29,13 @@ class ChatController extends GetxController {
       print('Error fetching chats from Firebase: $error');
     }
   }
-
   Future<void> createChat(List<String> userIds) async {
     try {
       final QuerySnapshot<Map<String, dynamic>> existingChat =
-      await FirebaseFirestore.instance.collection('chats').where('userIds', isEqualTo: userIds).get();
+      await FirebaseFirestore.instance
+          .collection('chats')
+          .where('userIds', arrayContainsAny: userIds)
+          .get();
 
       if (existingChat.docs.isNotEmpty) {
         print('Chat already exists');
@@ -55,6 +56,7 @@ class ChatController extends GetxController {
       print('Error creating chat: $error');
     }
   }
+
 
   Future<void> sendMessage(String chatId, MessageModel? message) async {
     try {

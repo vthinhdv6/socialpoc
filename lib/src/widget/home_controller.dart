@@ -2,6 +2,8 @@ import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../model/CommentModel.dart';
+import '../model/UserModel.dart';
 import '../model/videoModel.dart';
 
 class HomeController extends GetxController {
@@ -81,9 +83,35 @@ class HomeController extends GetxController {
       return ''; // Default avatar URL or handle the error
     }
   }
-  Future<void> updateAvatarUrl(String userId) async {
-    String newAvatarUrl = await Get.find<HomeController>().getAvatarUrl(userId);
+  Future<String> updateAvatarUrl(String userId) async {
+    String newAvatarUrl = await getAvatarUrl(userId);
     avatarUrl.value = newAvatarUrl;
+    return newAvatarUrl;
   }
+  Future<UserModel> _getUserInfoFromFirestore(String userId) async {
+    DocumentSnapshot<Map<String, dynamic>> userSnapshot = await FirebaseFirestore.instance.collection('users').doc(userId).get() as DocumentSnapshot<Map<String, dynamic>>;
+
+
+    if (userSnapshot.exists) {
+      return UserModel.fromMap(userSnapshot.data()!);
+    } else {
+      throw Exception('User not found');
+    }
+  }
+  Future<void> getUserInfoAndUpdateAvatar() async {
+    try {
+      // Lấy thông tin người dùng từ Firestore
+      UserModel user = await _getUserInfoFromFirestore(getCurrentUserId());
+
+      // Lấy avatarUrl từ thông tin người dùng
+      String newAvatarUrl = user.avatarUrl;
+
+      // Cập nhật giá trị avatarUrl trong HomeController
+      avatarUrl.value = newAvatarUrl;
+    } catch (error) {
+      print('Error updating avatar URL: $error');
+    }
+  }
+
 
 }

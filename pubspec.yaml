@@ -49,6 +49,7 @@ dependencies:
   camera: ^0.10.5+5
   path_provider: ^2.1.1
   carousel_slider: ^4.2.1
+  draggable_scrollbar: ^0.1.0
 
 
 
