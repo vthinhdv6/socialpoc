@@ -13,8 +13,9 @@ import 'comment_controller.dart';
 class CommentScreen extends StatefulWidget {
   final VideoModel video;
   final String avatarUrl;
+  final String userId;
 
-  CommentScreen({required this.video, required this.avatarUrl});
+  CommentScreen({required this.video, required this.avatarUrl, required this.userId});
 
   @override
   _CommentScreenState createState() => _CommentScreenState();
@@ -38,6 +39,7 @@ class _CommentScreenState extends State<CommentScreen> {
             avatarUrl: widget.avatarUrl,
             currentIndex: 0,
             video: widget.video,
+            userId: widget.userId,
           ),
           // Comments Section
           Positioned(

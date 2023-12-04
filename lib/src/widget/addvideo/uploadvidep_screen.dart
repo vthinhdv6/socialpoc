@@ -28,7 +28,7 @@ class TikTokProfileScreen1 extends StatefulWidget {
 }
 
 class _TikTokProfileScreen1State extends State<TikTokProfileScreen1> {
-  final VideoController videoController = VideoController();
+  VideoController videoController = VideoController(FirebaseAuth.instance.currentUser?.uid ?? '');
   String? _selectedVideoPath;
 
   @override

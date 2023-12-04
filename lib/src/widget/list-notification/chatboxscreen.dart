@@ -5,6 +5,8 @@ import '../../model/MessageModel.dart';
 import 'chat_controller.dart';
 
 
+
+
 class ChatBoxScreen extends StatelessWidget {
   final ChatModel chat;
   final ChatController chatController;
