@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
@@ -9,8 +8,6 @@ import 'package:video_player/video_player.dart';
 
 import '../../model/video.dart';
 
-
-
 class VideoController extends GetxController {
   VideoPlayerController? _controller;
   List<VideoModel> _videos = [];
@@ -18,13 +15,13 @@ class VideoController extends GetxController {
 
   String get avatarUrl => _avatarUrl.value;
 
-  VideoController() {
+  VideoController(String userId) {
     _controller = VideoPlayerController.networkUrl(Uri.parse(''));
     _controller!.initialize().then((_) {
       update();
     });
-    _loadVideos();
-    _loadAvatarUrl();
+    _loadVideos(userId);
+    _loadAvatarUrl(userId);
   }
 
   VideoPlayerController? get controller => _controller;
@@ -35,9 +32,7 @@ class VideoController extends GetxController {
     _avatarUrl.value = url;
   }
 
-  Future<void> _loadVideos() async {
-    final currentUser = FirebaseAuth.instance.currentUser;
-    String userId = currentUser?.uid ?? '';
+  Future<void> _loadVideos(String userId) async {
     QuerySnapshot videoSnapshot = await FirebaseFirestore.instance
         .collection('videos')
         .where('user', isEqualTo: userId)
@@ -78,15 +73,13 @@ class VideoController extends GetxController {
         'user': userId,
       });
 
-      _loadVideos(); // Reload videos after upload
+      _loadVideos(userId); // Reload videos after upload
     } catch (e) {
       print('Error uploading video: $e');
     }
   }
 
-  Future<void> _loadAvatarUrl() async {
-    final currentUser = FirebaseAuth.instance.currentUser;
-    String userId = currentUser?.uid ?? '';
+  Future<void> _loadAvatarUrl(String userId) async {
     DocumentSnapshot userSnapshot =
     await FirebaseFirestore.instance.collection('users').doc(userId).get();
 
@@ -97,8 +90,6 @@ class VideoController extends GetxController {
 
   Future<void> uploadAvatar(File avatarFile, String userId) async {
     try {
-      final currentUser = FirebaseAuth.instance.currentUser;
-      String userId = currentUser?.uid ?? '';
       firebase_storage.Reference storageReference = firebase_storage
           .FirebaseStorage.instance
           .ref()
@@ -118,31 +109,25 @@ class VideoController extends GetxController {
       print('Error uploading avatar: $e');
     }
   }
+
   Future<String?> getUserName(String userId) async {
     try {
       FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-      // Thực hiện truy vấn để lấy thông tin tài khoản từ Firestore dựa trên userId
-      DocumentSnapshot userSnapshot = await firestore.collection('users').doc(userId).get();
+      DocumentSnapshot userSnapshot =
+      await firestore.collection('users').doc(userId).get();
 
-      // Kiểm tra xem có dữ liệu không
       if (userSnapshot.exists) {
-        // Nếu có dữ liệu, lấy giá trị userName từ DocumentSnapshot
         String userName = userSnapshot['userName'] ?? '';
-
-        // Trả về giá trị userName
         return userName;
       } else {
-        // Nếu không có dữ liệu, trả về giá trị mặc định hoặc null
         return null;
       }
     } catch (e) {
-      // Xử lý lỗi nếu có
       print('Error fetching userName: $e');
       return null;
     }
   }
-
 
   @override
   void onClose() {

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:socialpoc/src/widget/upvideo.dart';
 
@@ -82,9 +83,18 @@ class HomeTab extends StatelessWidget {
 class ProfileTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Profile(),
-    );
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    String? userId = _auth.currentUser?.uid;
+
+    if (userId != null) {
+      return Center(
+        child: Profile(userId: userId),
+      );
+    } else {
+      return Center(
+        child: Text('User not logged in'),
+      );
+    }
   }
 }
 
@@ -101,7 +111,7 @@ class InboxTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: ChatScreen(),
+      child: ChatScreenBody(),
     );
   }
 }

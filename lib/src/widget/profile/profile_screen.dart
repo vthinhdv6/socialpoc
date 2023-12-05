@@ -16,34 +16,53 @@ import 'package:get/get.dart';
 import 'profile_controller.dart';
 
 class Profile extends StatelessWidget {
-  const Profile({super.key});
-
-  @override
+  final String userId;
+  Profile({Key? key, required this.userId}) : super(key: key) {
+    print('Profile widget created with userId: $userId');
+  }  @override
   Widget build(BuildContext context) {
     return const MaterialApp(
       title: 'Profile',
+<<<<<<< HEAD
       home: TikTokProfileScreen(
         isCheckCurrentUser: false,
       ),
+=======
+      home: TikTokProfileScreen(userId: userId),
+>>>>>>> ea2e8dca3467b542be6d35b7b211355243c332af
     );
   }
 }
 
 class TikTokProfileScreen extends StatefulWidget {
+<<<<<<< HEAD
   const TikTokProfileScreen(
       {super.key, required this.isCheckCurrentUser, this.uIdUserFirebase = 'current'});
   final bool isCheckCurrentUser;
   final String uIdUserFirebase;
+=======
+  final String userId;
+  TikTokProfileScreen({Key? key, required this.userId}) : super(key: key);
+
+>>>>>>> ea2e8dca3467b542be6d35b7b211355243c332af
   @override
   State<TikTokProfileScreen> createState() => _TikTokProfileScreenState();
 }
 
 class _TikTokProfileScreenState extends State<TikTokProfileScreen> {
-  final VideoController videoController = Get.put(VideoController());
   late UserModel userCurrent;
   final PageController pageController = PageController();
   TextEditingController textEditingControllerUsername = TextEditingController();
   bool isEditingName = false;
+  late VideoController videoController;
+  @override
+  void initState() {
+    super.initState();
+    videoController = Get.put(VideoController(widget.userId));
+
+  }
+
+
 
   Future<UserModel> fetchUserInformation() async {
     String idUser = '';
