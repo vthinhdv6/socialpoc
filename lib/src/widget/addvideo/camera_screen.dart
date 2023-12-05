@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:path/path.dart' show join;
@@ -82,7 +80,7 @@ class _CameraScreenState extends State<CameraScreen> {
           }
         },
         child: Icon(
-          _controller?.value.isRecordingVideo == true
+          _controller.value.isRecordingVideo == true
               ? Icons.stop
               : Icons.fiber_manual_record,
         ),

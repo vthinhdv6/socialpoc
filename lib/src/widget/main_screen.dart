@@ -1,7 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:socialpoc/src/widget/upvideo.dart';
-
 import 'addvideo/uploadvidep_screen.dart';
 import 'home.dart';
 import 'list-notification/chat_screen.dart';
@@ -83,15 +81,15 @@ class HomeTab extends StatelessWidget {
 class ProfileTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final FirebaseAuth _auth = FirebaseAuth.instance;
-    String? userId = _auth.currentUser?.uid;
-
+    String userId=  'df';
+    print(userId);
     if (userId != null) {
-      return Center(
-        child: Profile(userId: userId),
+      print('debug + $userId');
+      return const Center(
+        child: Profile(),
       );
     } else {
-      return Center(
+      return const Center(
         child: Text('User not logged in'),
       );
     }

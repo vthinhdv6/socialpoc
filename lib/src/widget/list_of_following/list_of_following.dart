@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:socialpoc/common/contants.dart';
 import 'package:socialpoc/src/model/UserModel.dart';
@@ -17,13 +15,17 @@ class ContactInformationIntime extends StatefulWidget {
   State<ContactInformationIntime> createState() => _ContactInformationIntimeState();
 }
 
-class _ContactInformationIntimeState extends State<ContactInformationIntime>  with TickerProviderStateMixin,AutomaticKeepAliveClientMixin {
+class _ContactInformationIntimeState extends State<ContactInformationIntime>
+    with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   late TabController _tabController;
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this,);
+    _tabController = TabController(
+      length: 3,
+      vsync: this,
+    );
   }
 
   @override
@@ -31,8 +33,10 @@ class _ContactInformationIntimeState extends State<ContactInformationIntime>  wi
     _tabController.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return DefaultTabController(
       length: 3,
       child: Scaffold(
@@ -45,7 +49,7 @@ class _ContactInformationIntimeState extends State<ContactInformationIntime>  wi
                 text: 'Followers ${widget.numberCountFollowers}',
               ),
               Tab(text: 'Following ${widget.userCurrentModel.following.length - 1}'),
-               Tab(text: 'Friend'),
+              const Tab(text: 'Friend'),
             ],
           ),
           title: const Text('Tabs Demo'),
@@ -56,15 +60,16 @@ class _ContactInformationIntimeState extends State<ContactInformationIntime>  wi
           children: [
             ListOfFollowers(userCurrentModel: widget.userCurrentModel),
             ListOfFollowing(userCurrentModel: widget.userCurrentModel),
-
-            ElevatedButton(onPressed: (){
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => LoginScreenMain(),
-                ),
-              );
-            }, child: Text("press")),
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => LoginScreenMain(),
+                    ),
+                  );
+                },
+                child: const Text("press")),
           ],
         ),
       ),

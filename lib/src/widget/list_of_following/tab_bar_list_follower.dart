@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:socialpoc/common/helpdesk/help_deshk_function.dart';
 import 'package:socialpoc/src/model/UserModel.dart';
 import 'package:socialpoc/src/widget/list_of_following/components/card_follow.dart';
+import 'package:socialpoc/src/widget/profile/profile_screen.dart';
 
 class ListOfFollowers extends StatefulWidget {
   const ListOfFollowers({super.key, required this.userCurrentModel});
@@ -22,7 +23,6 @@ class _ListOfFollowersState extends State<ListOfFollowers> {
     return listFollowing;
   }
 
-
   TextEditingController textController = TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -40,7 +40,7 @@ class _ListOfFollowersState extends State<ListOfFollowers> {
               } else if (snapshot.hasError) {
                 return AlertDialog(
                   title: const Text('Validation'),
-                  content:  Text(snapshot!.error.toString()),
+                  content: Text(snapshot.error.toString()),
                   actions: <Widget>[
                     TextButton(
                       style: TextButton.styleFrom(
@@ -68,7 +68,6 @@ class _ListOfFollowersState extends State<ListOfFollowers> {
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(4),
                               color: Colors.grey.withOpacity(0.2),
-
                             ),
                             child: TextFormField(
                               controller: textController,
@@ -100,7 +99,7 @@ class _ListOfFollowersState extends State<ListOfFollowers> {
                                   } else if (snapshot.hasError) {
                                     return AlertDialog(
                                       title: const Text('Validation'),
-                                      content:  Text(snapshot.error.toString() + "2"),
+                                      content: Text("${snapshot.error}2"),
                                       actions: <Widget>[
                                         TextButton(
                                           style: TextButton.styleFrom(
@@ -117,6 +116,7 @@ class _ListOfFollowersState extends State<ListOfFollowers> {
                                     return CardFollower(
                                       userModel: snapshot.data,
                                       uId: item,
+                                      contextOld: context,
                                     );
                                   } else {
                                     return const SizedBox();
@@ -132,5 +132,17 @@ class _ListOfFollowersState extends State<ListOfFollowers> {
             }),
       ),
     );
+  }
+
+  Function changeScreen(String uid) {
+    return () {
+      Navigator.of(context, rootNavigator: true).push(
+        MaterialPageRoute(
+          builder: (context) => TikTokProfileScreen(
+            uIdUserFirebase: uid,
+          ),
+        ),
+      );
+    };
   }
 }

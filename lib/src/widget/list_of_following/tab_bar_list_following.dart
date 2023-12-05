@@ -17,11 +17,10 @@ class _ListOfFollowingState extends State<ListOfFollowing> {
   Future<List<String>> fetchFollower() async {
     final CollectionReference usersCollection = FirebaseFirestore.instance.collection('users');
     final DocumentSnapshot documentSnapshotFollower =
-    await usersCollection.doc(FirebaseAuth.instance.currentUser?.uid).get();
+        await usersCollection.doc(FirebaseAuth.instance.currentUser?.uid).get();
     dynamic stringFollow = documentSnapshotFollower.data() as Map<String, dynamic>;
     List<String>? listFollowing = List<String>.from(stringFollow['following']);
-    print(stringFollow);
-        return listFollowing;
+    return listFollowing;
   }
 
   @override
@@ -40,7 +39,7 @@ class _ListOfFollowingState extends State<ListOfFollowing> {
               } else if (snapshot.hasError) {
                 return AlertDialog(
                   title: const Text('Validation'),
-                  content:  Text(snapshot!.error.toString()),
+                  content: Text(snapshot.error.toString()),
                   actions: <Widget>[
                     TextButton(
                       style: TextButton.styleFrom(
@@ -68,7 +67,6 @@ class _ListOfFollowingState extends State<ListOfFollowing> {
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(4),
                               color: Colors.grey.withOpacity(0.2),
-
                             ),
                             child: TextFormField(
                               controller: _textEditingController,
@@ -90,42 +88,42 @@ class _ListOfFollowingState extends State<ListOfFollowing> {
                         ),
                         Column(
                           children: snapshot.data!.map((item) {
-                            print('debug + ${item}');
-                            return item!='null'
+                            return !item.contains('null')
                                 ? FutureBuilder<UserModel>(
-                                future: fetchUserInformation(item),
-                                builder: (context, snapshot) {
-                                  if (snapshot.connectionState == ConnectionState.waiting) {
-                                    return const Center(
-                                      child: CircularProgressIndicator(),
-                                    );
-                                  }
-                                  else if (snapshot.hasError) {
-                                    return AlertDialog(
-                                      title: const Text('Validation'),
-                                      content:  Text("${snapshot.error}2"),
-                                      actions: <Widget>[
-                                        TextButton(
-                                          style: TextButton.styleFrom(
-                                            textStyle: Theme.of(context).textTheme.labelLarge,
-                                          ),
-                                          child: const Text('I understand'),
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                          },
-                                        ),
-                                      ],
-                                    );
-                                  } else if (snapshot.data!.userName != 'default' ||snapshot.data!= null) {
-                                    return CardFollower(
-                                      userModel: snapshot.data,
-                                      uId: item,
-                                    );
-                                  } else {
-                                    return const SizedBox();
-                                  }
-                                })
-                                : SizedBox();
+                                    future: fetchUserInformation(item),
+                                    builder: (context, snapshot) {
+                                      if (snapshot.connectionState == ConnectionState.waiting) {
+                                        return const Center(
+                                          child: CircularProgressIndicator(),
+                                        );
+                                      } else if (snapshot.hasError) {
+                                        return AlertDialog(
+                                          title: const Text('Validation'),
+                                          content: Text("${snapshot.error}2"),
+                                          actions: <Widget>[
+                                            TextButton(
+                                              style: TextButton.styleFrom(
+                                                textStyle: Theme.of(context).textTheme.labelLarge,
+                                              ),
+                                              child: const Text('I understand'),
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
+                                          ],
+                                        );
+                                      } else if (snapshot.data!.userName != 'default' ||
+                                          snapshot.data != null) {
+                                        return CardFollower(
+                                          userModel: snapshot.data,
+                                          uId: item,
+                                          contextOld: context,
+                                        );
+                                      } else {
+                                        return const SizedBox();
+                                      }
+                                    })
+                                : const SizedBox();
                           }).toList(),
                         ),
                       ],

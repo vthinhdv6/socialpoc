@@ -1,17 +1,13 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
-
 import '../comment/comment_screen.dart';
 import '../firebase/firestoreservice.dart';
-
 import '../model/videoModel.dart';
 import 'home_controller.dart';
 import 'profile/profile_controller.dart';
 import 'package:get/get.dart';
-
 import 'profile/profile_screen.dart';
 
 class VideoScreen extends StatelessWidget {
@@ -390,7 +386,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget>
                         ),
                         Text(
                           '${widget.videos[widget.currentIndex].likes ?? 0}',
-                          style: TextStyle(color: Colors.white),
+                          style: const TextStyle(color: Colors.white),
                         ),
                         IconButton(
                           onPressed: _onComment,

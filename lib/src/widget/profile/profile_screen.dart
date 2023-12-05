@@ -16,41 +16,31 @@ import 'package:get/get.dart';
 import 'profile_controller.dart';
 
 class Profile extends StatelessWidget {
+  const Profile({Key? key,  this.userId = "current"}) : super(key: key);
   final String userId;
-  Profile({Key? key, required this.userId}) : super(key: key) {
-    print('Profile widget created with userId: $userId');
-  }  @override
+
+  @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return  MaterialApp(
       title: 'Profile',
-<<<<<<< HEAD
       home: TikTokProfileScreen(
-        isCheckCurrentUser: false,
+         uIdUserFirebase: userId,
       ),
-=======
-      home: TikTokProfileScreen(userId: userId),
->>>>>>> ea2e8dca3467b542be6d35b7b211355243c332af
     );
   }
 }
 
 class TikTokProfileScreen extends StatefulWidget {
-<<<<<<< HEAD
   const TikTokProfileScreen(
-      {super.key, required this.isCheckCurrentUser, this.uIdUserFirebase = 'current'});
-  final bool isCheckCurrentUser;
+      {super.key, required this.uIdUserFirebase});
   final String uIdUserFirebase;
-=======
-  final String userId;
-  TikTokProfileScreen({Key? key, required this.userId}) : super(key: key);
-
->>>>>>> ea2e8dca3467b542be6d35b7b211355243c332af
   @override
   State<TikTokProfileScreen> createState() => _TikTokProfileScreenState();
 }
 
 class _TikTokProfileScreenState extends State<TikTokProfileScreen> {
   late UserModel userCurrent;
+  late String uIdUserProfile;
   final PageController pageController = PageController();
   TextEditingController textEditingControllerUsername = TextEditingController();
   bool isEditingName = false;
@@ -58,21 +48,20 @@ class _TikTokProfileScreenState extends State<TikTokProfileScreen> {
   @override
   void initState() {
     super.initState();
-    videoController = Get.put(VideoController(widget.userId));
-
+    fetchUserInformation();
+    videoController = Get.put(VideoController(widget.uIdUserFirebase.contains('current')
+        ? FirebaseAuth.instance.currentUser!.uid
+        : widget.uIdUserFirebase));
   }
 
-
-
   Future<UserModel> fetchUserInformation() async {
-    String idUser = '';
-    widget.uIdUserFirebase.contains('current')
-        ? idUser = FirebaseAuth.instance.currentUser!.uid
-        : idUser = widget.uIdUserFirebase ?? '';
+    print("debug user firsr ${widget.uIdUserFirebase}");
+    widget.uIdUserFirebase == 'current'
+        ? uIdUserProfile = FirebaseAuth.instance.currentUser!.uid
+        : uIdUserProfile = widget.uIdUserFirebase;
     userCurrent = generateFakeUser();
     final CollectionReference usersCollection = FirebaseFirestore.instance.collection('users');
-    final DocumentSnapshot documentSnapshot =
-        await usersCollection.doc(idUser).get();
+    final DocumentSnapshot documentSnapshot = await usersCollection.doc(uIdUserProfile).get();
     if (documentSnapshot.data() != null) {
       Map<String, dynamic> jsonDecodeUser = documentSnapshot.data() as Map<String, dynamic>;
       userCurrent = UserModel.fromMap(jsonDecodeUser);
@@ -142,14 +131,11 @@ class _TikTokProfileScreenState extends State<TikTokProfileScreen> {
                               if (result != null && result.files.isNotEmpty) {
                                 final selectedFile = result.files.single;
                                 if (selectedFile.path != null) {
-                                  print('Selected Image Path: ${selectedFile.path}');
                                   File imageFile = File(selectedFile.path!);
                                   String userId = FirebaseAuth.instance.currentUser?.uid ?? '';
                                   await videoController.uploadAvatar(imageFile, userId);
                                   setState(() {});
-                                } else {
-                                  print('Error: selectedFile.path is null.');
-                                }
+                                } else {}
                               }
                             },
                             child: const Icon(Icons.access_time_filled),
@@ -267,7 +253,7 @@ class _TikTokProfileScreenState extends State<TikTokProfileScreen> {
                         borderRadius: BorderRadius.only(topRight: Radius.circular(40)),
                         color: Colors.white,
                       ),
-                      child: widget.isCheckCurrentUser
+                      child:uIdUserProfile.contains(FirebaseAuth.instance.currentUser!.uid)
                           ? Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
@@ -296,7 +282,7 @@ class _TikTokProfileScreenState extends State<TikTokProfileScreen> {
                               builder: (context, snapshot) {
                                 if (snapshot.hasData) {
                                   return Container(
-                                      alignment: Alignment.centerRight,
+                                      alignment: Alignment.center,
                                       width: double.infinity,
                                       child: snapshot.data!
                                           ? Row(
@@ -323,7 +309,7 @@ class _TikTokProfileScreenState extends State<TikTokProfileScreen> {
                                                     ),
                                                   ),
                                                 ),
-                                                SizedBox(width: 4),
+                                                const SizedBox(width: 4),
                                                 ElevatedButton(
                                                   // onPressed: () {
                                                   //   followUserToFirebase(
@@ -348,7 +334,7 @@ class _TikTokProfileScreenState extends State<TikTokProfileScreen> {
                                               onTap: () {
                                                 followUserToFirebase(
                                                     FirebaseAuth.instance.currentUser?.email,
-                                                    userCurrent!.email);
+                                                    userCurrent.email);
                                               },
                                               child: Container(
                                                 width: MediaQuery.of(context).size.width * 0.3,
@@ -433,13 +419,10 @@ class _TikTokProfileScreenState extends State<TikTokProfileScreen> {
                       if (result != null && result.files.isNotEmpty) {
                         final selectedFile = result.files.single;
                         if (selectedFile.path != null) {
-                          print('Selected File Path: ${selectedFile.path}');
                           File videoFile = File(selectedFile.path!);
                           String userId = FirebaseAuth.instance.currentUser?.uid ?? '';
                           await videoController.uploadVideo(videoFile, userId);
-                        } else {
-                          print('Error: selectedFile.path is null.');
-                        }
+                        } else {}
                       }
                     },
                     child: const Text('Chọn và Upload Video'),
@@ -448,7 +431,7 @@ class _TikTokProfileScreenState extends State<TikTokProfileScreen> {
               } else if (snapshot.hasError) {
                 return Text('Error: ${snapshot.error}');
               } else {
-                return const Text('nullValue');
+                return Center(child: CircularProgressIndicator(),);
               }
             }),
       ),
