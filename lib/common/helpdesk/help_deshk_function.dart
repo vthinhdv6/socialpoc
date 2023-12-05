@@ -50,6 +50,21 @@ Future<String> findUid(String emailUser) async {
   return 'null';
 }
 
+Future<bool> isFollowUser(String userCheck,String userChecked) async {
+  final CollectionReference usersCollection = FirebaseFirestore.instance.collection('users');
+  final DocumentSnapshot documentSnapshotFollower = await usersCollection.doc(userCheck).get();
+  dynamic stringFollow = documentSnapshotFollower.data() as Map<String, dynamic>;
+  List<String>? listFollowing = List<String>.from(stringFollow['following']);
+  if (listFollowing.contains(userChecked)) {
+    print("true");
+    return true;
+  }
+  else{
+    return false;
+  }
+
+}
+
 Future<bool> checkFriend(String userCheck, String userChecked) async {
   final CollectionReference usersCollection = FirebaseFirestore.instance.collection('users');
   final DocumentSnapshot documentSnapshotFollower = await usersCollection.doc(userChecked).get();
@@ -75,3 +90,31 @@ Future<UserModel> fetchUserInformation(String uId) async {
   }
   return userModel = generateFakeUser();
 }
+
+Future<String> unFollow(String uIdUserCurrent, String uIdUserFollowed) async{
+  final CollectionReference usersCollection = FirebaseFirestore.instance.collection('users');
+  DocumentSnapshot documentSnapshotFollower = await usersCollection.doc(uIdUserCurrent).get();
+  dynamic stringFollow = documentSnapshotFollower.data() as Map<String, dynamic>;
+  List<String>? listFollowing = List<String>.from(stringFollow['following']);
+  if (listFollowing.contains(uIdUserFollowed)) {
+    documentSnapshotFollower.reference.update({
+      'following' :listFollowing.remove(uIdUserFollowed),
+    });
+    documentSnapshotFollower = await usersCollection.doc(uIdUserFollowed).get();
+    stringFollow = documentSnapshotFollower.data() as Map<String, dynamic>;
+    listFollowing = List<String>.from(stringFollow['follower']);
+    if (listFollowing.contains(uIdUserCurrent)) {
+      documentSnapshotFollower.reference.update({
+        'follower': listFollowing.remove(uIdUserCurrent),
+      });
+      return "success";
+    }
+    return 'success in current un follow';
+
+  }
+  else{
+    return 'fail';
+  }
+}
+
+

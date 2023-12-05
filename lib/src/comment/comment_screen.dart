@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:socialpoc/src/model/CommentModel.dart';
-import 'package:draggable_scrollbar/draggable_scrollbar.dart';
 
 import '../model/UserModel.dart';
 import '../model/videoModel.dart';
@@ -24,7 +23,6 @@ class _CommentScreenState extends State<CommentScreen> {
   final TextEditingController _commentController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   final CommentController commentController = Get.put(CommentController());
-
 
   @override
   Widget build(BuildContext context) {
@@ -60,11 +58,15 @@ class _CommentScreenState extends State<CommentScreen> {
                         if (snapshot.hasData && snapshot.data != null) {
                           var comments = (snapshot.data! as QuerySnapshot)
                               .docs
-                              .map((doc) => CommentModel.fromMap(doc.data() as Map<String, dynamic>))
+                              .map(
+                                  (doc) => CommentModel.fromMap(doc.data() as Map<String, dynamic>))
                               .toList();
 
                           if (comments.isNotEmpty) {
-                            return CommentList(video: widget.video, comments: comments, scrollController: _scrollController);
+                            return CommentList(
+                                video: widget.video,
+                                comments: comments,
+                                scrollController: _scrollController);
                           } else {
                             return Center(child: Text("No comments yet."));
                           }
@@ -96,12 +98,14 @@ class _CommentScreenState extends State<CommentScreen> {
 
                             if (commentText.isNotEmpty) {
                               String currentUserId = FirebaseAuth.instance.currentUser!.uid;
-                              String uid = FirebaseAuth.instance.currentUser?.uid ?? 'defaultUserId';
+                              String uid =
+                                  FirebaseAuth.instance.currentUser?.uid ?? 'defaultUserId';
 
                               String commentId = uid;
 
                               // Add the comment to Firestore
-                              DocumentReference commentRef = await FirebaseFirestore.instance.collection('comments').add({
+                              DocumentReference commentRef =
+                                  await FirebaseFirestore.instance.collection('comments').add({
                                 'commentId': commentId,
                                 'videoId': widget.video.videoId,
                                 'userId': currentUserId, // Replace with actual user ID
@@ -109,10 +113,10 @@ class _CommentScreenState extends State<CommentScreen> {
                                 'commentTime': DateTime.now().toUtc(),
                               });
 
-
                               setState(() {
                                 _commentController.clear();
-                                _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+                                _scrollController
+                                    .jumpTo(_scrollController.position.maxScrollExtent);
                               });
                             }
                           },
@@ -129,8 +133,6 @@ class _CommentScreenState extends State<CommentScreen> {
       ),
     );
   }
-
-
 }
 
 class CommentList extends StatelessWidget {

@@ -13,13 +13,15 @@ class ListOfFollowing extends StatefulWidget {
 }
 
 class _ListOfFollowingState extends State<ListOfFollowing> {
+  final TextEditingController _textEditingController = TextEditingController();
   Future<List<String>> fetchFollower() async {
     final CollectionReference usersCollection = FirebaseFirestore.instance.collection('users');
     final DocumentSnapshot documentSnapshotFollower =
     await usersCollection.doc(FirebaseAuth.instance.currentUser?.uid).get();
     dynamic stringFollow = documentSnapshotFollower.data() as Map<String, dynamic>;
     List<String>? listFollowing = List<String>.from(stringFollow['following']);
-    return listFollowing;
+    print(stringFollow);
+        return listFollowing;
   }
 
   @override
@@ -44,7 +46,7 @@ class _ListOfFollowingState extends State<ListOfFollowing> {
                       style: TextButton.styleFrom(
                         textStyle: Theme.of(context).textTheme.labelLarge,
                       ),
-                      child: const Text('I understand'),
+                      child: const Text('I understand yes'),
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
@@ -55,40 +57,78 @@ class _ListOfFollowingState extends State<ListOfFollowing> {
                 return SafeArea(
                   child: SingleChildScrollView(
                     child: Column(
-                      children: snapshot.data!.map((item) {
-                        return FutureBuilder<UserModel>(
-                            future: fetchUserInformation(item),
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState == ConnectionState.waiting) {
-                                return const Center(
-                                  child: CircularProgressIndicator(),
-                                );
-                              } else if (snapshot.hasError) {
-                                return AlertDialog(
-                                  title: const Text('Validation'),
-                                  content:  Text("${snapshot.error}2"),
-                                  actions: <Widget>[
-                                    TextButton(
-                                      style: TextButton.styleFrom(
-                                        textStyle: Theme.of(context).textTheme.labelLarge,
-                                      ),
-                                      child: const Text('I understand'),
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                    ),
-                                  ],
-                                );
-                              } else if (snapshot.data!.userName != 'default') {
-                                return CardFollower(
-                                  userModel: snapshot.data,
-                                  uId: item,
-                                );
-                              } else {
-                                return const SizedBox();
-                              }
-                            });
-                      }).toList(),
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            alignment: Alignment.center,
+                            width: double.infinity,
+                            height: 50,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(4),
+                              color: Colors.grey.withOpacity(0.2),
+
+                            ),
+                            child: TextFormField(
+                              controller: _textEditingController,
+                              autofocus: true,
+                              obscureText: false,
+                              decoration: const InputDecoration(
+                                alignLabelWithHint: true,
+                                enabledBorder: InputBorder.none,
+                                focusedBorder: InputBorder.none,
+                                errorBorder: InputBorder.none,
+                                focusedErrorBorder: InputBorder.none,
+                                suffixIcon: Icon(
+                                  Icons.search_sharp,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Column(
+                          children: snapshot.data!.map((item) {
+                            print('debug + ${item}');
+                            return item!='null'
+                                ? FutureBuilder<UserModel>(
+                                future: fetchUserInformation(item),
+                                builder: (context, snapshot) {
+                                  if (snapshot.connectionState == ConnectionState.waiting) {
+                                    return const Center(
+                                      child: CircularProgressIndicator(),
+                                    );
+                                  }
+                                  else if (snapshot.hasError) {
+                                    return AlertDialog(
+                                      title: const Text('Validation'),
+                                      content:  Text("${snapshot.error}2"),
+                                      actions: <Widget>[
+                                        TextButton(
+                                          style: TextButton.styleFrom(
+                                            textStyle: Theme.of(context).textTheme.labelLarge,
+                                          ),
+                                          child: const Text('I understand'),
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  } else if (snapshot.data!.userName != 'default' ||snapshot.data!= null) {
+                                    return CardFollower(
+                                      userModel: snapshot.data,
+                                      uId: item,
+                                    );
+                                  } else {
+                                    return const SizedBox();
+                                  }
+                                })
+                                : SizedBox();
+                          }).toList(),
+                        ),
+                      ],
                     ),
                   ),
                 );

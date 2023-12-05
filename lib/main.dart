@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:socialpoc/src/widget/login/login_email_screen.dart';
 import 'src/widget/list-notification/chat_screen.dart';
 import 'src/widget/login/register_email_screen.dart';
 import 'src/widget/main_screen.dart';
@@ -25,7 +26,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MainScreen(),
+      home: LoginScreenMain(),
     );
   }
 }
