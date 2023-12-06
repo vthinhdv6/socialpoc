@@ -17,34 +17,23 @@ import 'profile_controller.dart';
 
 class Profile extends StatelessWidget {
   final String userId;
-  Profile({Key? key, required this.userId}) : super(key: key) {
-    print('Profile widget created with userId: $userId');
-  }  @override
+  const Profile({Key? key, required this.userId}) : super(key: key);
+  @override
   Widget build(BuildContext context) {
     return const MaterialApp(
       title: 'Profile',
-<<<<<<< HEAD
       home: TikTokProfileScreen(
         isCheckCurrentUser: false,
       ),
-=======
-      home: TikTokProfileScreen(userId: userId),
->>>>>>> ea2e8dca3467b542be6d35b7b211355243c332af
     );
   }
 }
 
 class TikTokProfileScreen extends StatefulWidget {
-<<<<<<< HEAD
   const TikTokProfileScreen(
       {super.key, required this.isCheckCurrentUser, this.uIdUserFirebase = 'current'});
   final bool isCheckCurrentUser;
   final String uIdUserFirebase;
-=======
-  final String userId;
-  TikTokProfileScreen({Key? key, required this.userId}) : super(key: key);
-
->>>>>>> ea2e8dca3467b542be6d35b7b211355243c332af
   @override
   State<TikTokProfileScreen> createState() => _TikTokProfileScreenState();
 }
@@ -58,21 +47,20 @@ class _TikTokProfileScreenState extends State<TikTokProfileScreen> {
   @override
   void initState() {
     super.initState();
-    videoController = Get.put(VideoController(widget.userId));
-
+    fetchUserInformation();
+    videoController = Get.put(VideoController(widget.uIdUserFirebase.contains('current')
+        ? FirebaseAuth.instance.currentUser!.uid
+        : widget.uIdUserFirebase));
   }
-
-
 
   Future<UserModel> fetchUserInformation() async {
     String idUser = '';
     widget.uIdUserFirebase.contains('current')
         ? idUser = FirebaseAuth.instance.currentUser!.uid
-        : idUser = widget.uIdUserFirebase ?? '';
+        : idUser = widget.uIdUserFirebase;
     userCurrent = generateFakeUser();
     final CollectionReference usersCollection = FirebaseFirestore.instance.collection('users');
-    final DocumentSnapshot documentSnapshot =
-        await usersCollection.doc(idUser).get();
+    final DocumentSnapshot documentSnapshot = await usersCollection.doc(idUser).get();
     if (documentSnapshot.data() != null) {
       Map<String, dynamic> jsonDecodeUser = documentSnapshot.data() as Map<String, dynamic>;
       userCurrent = UserModel.fromMap(jsonDecodeUser);
@@ -84,7 +72,7 @@ class _TikTokProfileScreenState extends State<TikTokProfileScreen> {
   Future<void> changeUserInformation(bool optionChange, String contentChange) async {
     final CollectionReference userCollection = FirebaseFirestore.instance.collection('users');
     final DocumentSnapshot documentSnapshot =
-        await userCollection.doc(FirebaseAuth.instance.currentUser?.uid).get();
+    await userCollection.doc(FirebaseAuth.instance.currentUser?.uid).get();
     if (documentSnapshot.data() != null) {
       if (optionChange) {
         documentSnapshot.reference.update({
@@ -142,14 +130,11 @@ class _TikTokProfileScreenState extends State<TikTokProfileScreen> {
                               if (result != null && result.files.isNotEmpty) {
                                 final selectedFile = result.files.single;
                                 if (selectedFile.path != null) {
-                                  print('Selected Image Path: ${selectedFile.path}');
                                   File imageFile = File(selectedFile.path!);
                                   String userId = FirebaseAuth.instance.currentUser?.uid ?? '';
                                   await videoController.uploadAvatar(imageFile, userId);
                                   setState(() {});
-                                } else {
-                                  print('Error: selectedFile.path is null.');
-                                }
+                                } else {}
                               }
                             },
                             child: const Icon(Icons.access_time_filled),
@@ -164,68 +149,68 @@ class _TikTokProfileScreenState extends State<TikTokProfileScreen> {
                     children: [
                       isEditingName
                           ? SizedBox(
-                              width: MediaQuery.sizeOf(context).width * 0.3,
-                              child: TextField(
-                                controller: textEditingControllerUsername,
-                                decoration: const InputDecoration(
-                                  hintText: 'Type something...',
-                                  // You can customize the appearance of the text field using various properties of InputDecoration
-                                ),
-                              ),
-                            )
+                        width: MediaQuery.sizeOf(context).width * 0.3,
+                        child: TextField(
+                          controller: textEditingControllerUsername,
+                          decoration: const InputDecoration(
+                            hintText: 'Type something...',
+                            // You can customize the appearance of the text field using various properties of InputDecoration
+                          ),
+                        ),
+                      )
                           : Text(
-                              snapshot.data!.userName,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: textSizeMedium * 1.2,
-                                color: colorBorder,
-                              ),
-                            ),
+                        snapshot.data!.userName,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: textSizeMedium * 1.2,
+                          color: colorBorder,
+                        ),
+                      ),
                       const SizedBox(
                         width: 3,
                       ),
                       isEditingName
                           ? InkWell(
-                              onTap: () {
-                                textEditingControllerUsername.text != ''
-                                    ? changeUserInformation(
-                                        true, textEditingControllerUsername.text)
-                                    : showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return AlertDialog(
-                                            title: const Text('Validation'),
-                                            content: const Text(
-                                                "You haven't entered the specified content"),
-                                            actions: <Widget>[
-                                              TextButton(
-                                                style: TextButton.styleFrom(
-                                                  textStyle: Theme.of(context).textTheme.labelLarge,
-                                                ),
-                                                child: const Text('I understand'),
-                                                onPressed: () {
-                                                  Navigator.of(context).pop();
-                                                },
-                                              ),
-                                            ],
-                                          );
-                                        },
-                                      );
-                              },
-                              child: const Icon(Icons.save_alt),
-                            )
+                        onTap: () {
+                          textEditingControllerUsername.text != ''
+                              ? changeUserInformation(
+                              true, textEditingControllerUsername.text)
+                              : showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: const Text('Validation'),
+                                content: const Text(
+                                    "You haven't entered the specified content"),
+                                actions: <Widget>[
+                                  TextButton(
+                                    style: TextButton.styleFrom(
+                                      textStyle: Theme.of(context).textTheme.labelLarge,
+                                    ),
+                                    child: const Text('I understand'),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                        child: const Icon(Icons.save_alt),
+                      )
                           : GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  isEditingName = true;
-                                });
-                              },
-                              child: Container(
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(75),
-                                      border: Border.all(width: 1, color: Colors.black)),
-                                  child: const Icon(Icons.mode_edit_outlined)),
-                            )
+                        onTap: () {
+                          setState(() {
+                            isEditingName = true;
+                          });
+                        },
+                        child: Container(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(75),
+                                border: Border.all(width: 1, color: Colors.black)),
+                            child: const Icon(Icons.mode_edit_outlined)),
+                      )
                     ],
                   ),
                   Row(
@@ -269,112 +254,112 @@ class _TikTokProfileScreenState extends State<TikTokProfileScreen> {
                       ),
                       child: widget.isCheckCurrentUser
                           ? Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                ButtonCommonWidget(
-                                  buttonText: 'Thông báo',
-                                  fontColor: colorText,
-                                  onPressed: () {},
-                                  backgroundColor: Colors.white,
-                                  borderColor: colorText,
-                                ),
-                                ButtonCommonWidget(
-                                  buttonText: 'Chia sẻ hồ sơ',
-                                  onPressed: () {},
-                                  borderColor: Colors.transparent,
-                                ),
-                                ButtonCommonWidget(
-                                  buttonText: 'Follow +',
-                                  onPressed: () {},
-                                  borderColor: Colors.transparent,
-                                ),
-                              ],
-                            )
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          ButtonCommonWidget(
+                            buttonText: 'Thông báo',
+                            fontColor: colorText,
+                            onPressed: () {},
+                            backgroundColor: Colors.white,
+                            borderColor: colorText,
+                          ),
+                          ButtonCommonWidget(
+                            buttonText: 'Chia sẻ hồ sơ',
+                            onPressed: () {},
+                            borderColor: Colors.transparent,
+                          ),
+                          ButtonCommonWidget(
+                            buttonText: 'Follow +',
+                            onPressed: () {},
+                            borderColor: Colors.transparent,
+                          ),
+                        ],
+                      )
                           : FutureBuilder<bool>(
-                              future: isFollowUser(
-                                  FirebaseAuth.instance.currentUser!.uid, 'yAQdk28qRNDfxYMaeN1s'),
-                              builder: (context, snapshot) {
-                                if (snapshot.hasData) {
-                                  return Container(
-                                      alignment: Alignment.centerRight,
-                                      width: double.infinity,
-                                      child: snapshot.data!
-                                          ? Row(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              children: [
-                                                ElevatedButton(
-                                                  // onPressed: () {
-                                                  //   followUserToFirebase(
-                                                  //       // FirebaseAuth.instance.currentUser!.email, userModel!.email);
-                                                  // },
-                                                  style: const ButtonStyle(
-                                                    backgroundColor:
-                                                        MaterialStatePropertyAll<Color>(
-                                                            Colors.white),
-                                                  ),
-                                                  onPressed: () {
-                                                    followUserToFirebase;
-                                                    setState(() {});
-                                                  },
-                                                  child: const Text(
-                                                    'Unfollow',
-                                                    style: TextStyle(
-                                                      color: Colors.black,
-                                                    ),
-                                                  ),
-                                                ),
-                                                SizedBox(width: 4),
-                                                ElevatedButton(
-                                                  // onPressed: () {
-                                                  //   followUserToFirebase(
-                                                  //       // FirebaseAuth.instance.currentUser!.email, userModel!.email);
-                                                  // },
-                                                  style: const ButtonStyle(
-                                                    backgroundColor:
-                                                        MaterialStatePropertyAll<Color>(
-                                                            Colors.white),
-                                                  ),
-                                                  onPressed: () {},
-                                                  child: const Text(
-                                                    'Send message',
-                                                    style: TextStyle(
-                                                      color: Colors.black,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            )
-                                          : GestureDetector(
-                                              onTap: () {
-                                                followUserToFirebase(
-                                                    FirebaseAuth.instance.currentUser?.email,
-                                                    userCurrent!.email);
-                                              },
-                                              child: Container(
-                                                width: MediaQuery.of(context).size.width * 0.3,
-                                                padding: const EdgeInsets.all(10),
-                                                decoration: BoxDecoration(
-                                                  borderRadius: BorderRadius.circular(10),
-                                                  color: Colors.red,
-                                                ),
-                                                child: const Align(
-                                                  alignment: Alignment.center,
-                                                  child: Text(
-                                                    'Follow',
-                                                    style: TextStyle(
-                                                      color: Colors.white,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ));
-                                } else if (snapshot.hasError) {
-                                  return Text(snapshot.error.toString());
-                                } else {
-                                  return const SizedBox();
-                                }
-                              },
-                            )),
+                        future: isFollowUser(
+                            FirebaseAuth.instance.currentUser!.uid, 'yAQdk28qRNDfxYMaeN1s'),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            return Container(
+                                alignment: Alignment.centerRight,
+                                width: double.infinity,
+                                child: snapshot.data!
+                                    ? Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    ElevatedButton(
+                                      // onPressed: () {
+                                      //   followUserToFirebase(
+                                      //       // FirebaseAuth.instance.currentUser!.email, userModel!.email);
+                                      // },
+                                      style: const ButtonStyle(
+                                        backgroundColor:
+                                        MaterialStatePropertyAll<Color>(
+                                            Colors.white),
+                                      ),
+                                      onPressed: () {
+                                        followUserToFirebase;
+                                        setState(() {});
+                                      },
+                                      child: const Text(
+                                        'Unfollow',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 4),
+                                    ElevatedButton(
+                                      // onPressed: () {
+                                      //   followUserToFirebase(
+                                      //       // FirebaseAuth.instance.currentUser!.email, userModel!.email);
+                                      // },
+                                      style: const ButtonStyle(
+                                        backgroundColor:
+                                        MaterialStatePropertyAll<Color>(
+                                            Colors.white),
+                                      ),
+                                      onPressed: () {},
+                                      child: const Text(
+                                        'Send message',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                )
+                                    : GestureDetector(
+                                  onTap: () {
+                                    followUserToFirebase(
+                                        FirebaseAuth.instance.currentUser?.email,
+                                        userCurrent.email);
+                                  },
+                                  child: Container(
+                                    width: MediaQuery.of(context).size.width * 0.3,
+                                    padding: const EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: Colors.red,
+                                    ),
+                                    child: const Align(
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        'Follow',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ));
+                          } else if (snapshot.hasError) {
+                            return Text(snapshot.error.toString());
+                          } else {
+                            return const SizedBox();
+                          }
+                        },
+                      )),
                   const Divider(
                     color: colorBackground2,
                     height: 1,
@@ -396,7 +381,7 @@ class _TikTokProfileScreenState extends State<TikTokProfileScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: List.generate(
                               3,
-                              (index) {
+                                  (index) {
                                 final videoIndex = pageIndex * 3 + index;
                                 if (videoIndex < videoController.videos.length &&
                                     videoController.videos[videoIndex].user ==
@@ -433,13 +418,10 @@ class _TikTokProfileScreenState extends State<TikTokProfileScreen> {
                       if (result != null && result.files.isNotEmpty) {
                         final selectedFile = result.files.single;
                         if (selectedFile.path != null) {
-                          print('Selected File Path: ${selectedFile.path}');
                           File videoFile = File(selectedFile.path!);
                           String userId = FirebaseAuth.instance.currentUser?.uid ?? '';
                           await videoController.uploadVideo(videoFile, userId);
-                        } else {
-                          print('Error: selectedFile.path is null.');
-                        }
+                        } else {}
                       }
                     },
                     child: const Text('Chọn và Upload Video'),
@@ -460,8 +442,8 @@ class _TikTokProfileScreenState extends State<TikTokProfileScreen> {
         context,
         MaterialPageRoute(
             builder: (context) => ContactInformationIntime(
-                  userCurrentModel: userCurrent,
-                  numberCountFollowers: userCurrent.followers.length - 1,
-                )));
+              userCurrentModel: userCurrent,
+              numberCountFollowers: userCurrent.followers.length - 1,
+            )));
   }
 }
