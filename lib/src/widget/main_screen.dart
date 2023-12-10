@@ -1,3 +1,4 @@
+import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'addvideo/uploadvidep_screen.dart';
@@ -35,35 +36,33 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: _screens[_currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.orange,
+        child: Icon(Icons.home,color: Colors.black54,),
+        onPressed: () {
+        setState(() {
+          _currentIndex = 0;
+        });
+      },
+        //params
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+      bottomNavigationBar: AnimatedBottomNavigationBar(
+        icons: const [
+          Icons.home,
+          Icons.person,
+          Icons.delete,
+          Icons.mail,
+          Icons.add,
+        ],
+        activeIndex: _currentIndex,
         onTap: (index) {
           setState(() {
             _currentIndex = index;
           });
         },
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.delete),
-            label: 'Trash',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.mail),
-            label: 'Inbox', // Thêm item cho InboxTab
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add),
-            label: 'Add', // Thêm item cho AddTab
-          ),
-        ],
+        gapLocation: GapLocation.end,
+        notchSmoothness: NotchSmoothness.softEdge,
       ),
     );
   }

@@ -52,7 +52,6 @@ class _ContactInformationIntimeState extends State<ContactInformationIntime>
               const Tab(text: 'Friend'),
             ],
           ),
-          title: const Text('Tabs Demo'),
           centerTitle: true,
         ),
         body: TabBarView(
