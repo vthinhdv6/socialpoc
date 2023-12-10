@@ -1,14 +1,8 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:socialpoc/common/contants.dart';
-import 'package:socialpoc/common/widget/buttonCommonWidget.dart';
-import 'package:socialpoc/common/widget/tab_bar_widget.dart';
-import 'package:video_player/video_player.dart';
 import '../profile/profile_controller.dart';
-import 'package:video_player/video_player.dart';
-
 import 'showvideo_screen.dart';
 
 

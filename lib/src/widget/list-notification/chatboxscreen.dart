@@ -1,11 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../../model/ChatModel.dart';
 import '../../model/MessageModel.dart';
 import 'chat_controller.dart';
-
-
-
 
 class ChatBoxScreen extends StatelessWidget {
   final ChatModel chat;
@@ -26,7 +25,7 @@ class ChatBoxScreen extends StatelessWidget {
           child: ListView.builder(
             itemCount: chat.messages?.length ?? 0,
             itemBuilder: (context, index) {
-              if (chat.messages != null) {
+              if (chat.messages != null && chat.messages!.isNotEmpty) {
                 final MessageModel message = chat.messages![index];
                 return ListTile(
                   title: Text(message.content),
@@ -57,7 +56,7 @@ class ChatBoxScreen extends StatelessWidget {
                     if (messageController.text.isNotEmpty) {
                       final MessageModel newMessage = MessageModel(
                         messageId: 'unique_id',
-                        userId: 'current_user_id',
+                        userId: FirebaseAuth.instance.currentUser?.uid ?? '',
                         content: messageController.text,
                         messageTime: DateTime.now(),
                       );

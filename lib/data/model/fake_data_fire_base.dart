@@ -1,8 +1,6 @@
-import 'dart:math';
 
 import 'package:socialpoc/data/model/comment_model.dart';
 import 'package:socialpoc/data/model/tym_view_model.dart';
-import 'package:socialpoc/data/model/user_view_model.dart';
 import 'package:socialpoc/src/model/UserModel.dart';
 
 List<CommentModel> fakeDataComment() {
@@ -24,7 +22,6 @@ List<CommentModel> fakeDataFollow() {
 }
 
 UserModel generateFakeUser() {
-  final random = Random();
   const email = 'thuthao1110@gmail.com';
   const age = 21;
   const userName = 'default';

@@ -1,6 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:get/get.dart';
 import 'package:socialpoc/data/model/fake_data_fire_base.dart';
 import 'package:socialpoc/src/model/UserModel.dart';
 

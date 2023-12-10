@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:socialpoc/common/helpdesk/help_deshk_function.dart';
@@ -10,19 +9,23 @@ class CardFollower extends StatelessWidget {
     super.key,
     required this.userModel,
     required this.uId,
+    required this.contextOld,
+
   });
+  final BuildContext contextOld;
   final UserModel? userModel;
   final String uId;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: (){
+      onTap: () {
         Navigator.of(context, rootNavigator: true).push(
           MaterialPageRoute(
-            builder: (context) => TikTokProfileScreen(isCheckCurrentUser: FirebaseAuth.instance.currentUser!.uid.contains(uId),uIdUserFirebase: uId),
+            builder: (contextOld) => TikTokProfileScreen(
+              uIdUserFirebase: uId,
+            ),
           ),
         );
-
       },
       child: FutureBuilder<bool>(
           future: checkFriend(uId, FirebaseAuth.instance.currentUser!.uid),
@@ -31,13 +34,12 @@ class CardFollower extends StatelessWidget {
               print(snapshot.data);
               return GestureDetector(
                 onTap: () {
-                  Navigator.push(
-                    context,
+                  Navigator.of(context, rootNavigator: true).push(
                     MaterialPageRoute(
-                        builder: (context) => TikTokProfileScreen(
-                              isCheckCurrentUser: false,
-                              uIdUserFirebase: uId,
-                            )),
+                      builder: (contextOld) => TikTokProfileScreen(
+                        uIdUserFirebase: uId,
+                      ),
+                    ),
                   );
                 },
                 child: Container(

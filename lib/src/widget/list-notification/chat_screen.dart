@@ -18,7 +18,6 @@ class ChatScreen extends StatelessWidget {
 
 class ChatScreenBody extends StatelessWidget {
   final ChatController chatController = Get.put(ChatController());
-  final TextEditingController messageController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -28,26 +27,26 @@ class ChatScreenBody extends StatelessWidget {
       ),
       body: GetBuilder<ChatController>(
         builder: (chatController) {
-          ChatModel? chat = chatController.currentChat;
-
-          // Provide a default value for chat when it is null
-          chat ??= ChatModel(
-            chatId: 'default_chat_id',
-            userIds: [], // Provide default values as needed
-            messages: [],
-          );
-
           return chatController.chatList.isEmpty
               ? Center(
             child: Text('No chats available. Start a new chat!'),
           )
-              : ChatBoxScreen(
-            chat: chat,
-            chatController: chatController,
-            messageController: messageController,
+              : ListView.builder(
+            itemCount: chatController.chatList.length,
+            itemBuilder: (context, index) {
+              final ChatModel chat = chatController.chatList[index];
+              return ListTile(
+                title: Text('Chat ${index + 1}'),
+                onTap: () async {
+                  // Gọi hàm chuyển đến màn hình chat
+                  await chatController.navigateToChat(chat);
+                },
+              );
+            },
           );
         },
       ),
     );
   }
 }
+
