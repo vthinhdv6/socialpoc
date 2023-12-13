@@ -1,6 +1,8 @@
+// Trong ChatBoxScreen
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 import '../../model/ChatModel.dart';
 import '../../model/MessageModel.dart';
@@ -21,22 +23,53 @@ class ChatBoxScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Expanded(
-          child: ListView.builder(
-            itemCount: chat.messages?.length ?? 0,
-            itemBuilder: (context, index) {
-              if (chat.messages != null && chat.messages!.isNotEmpty) {
-                final MessageModel message = chat.messages![index];
-                return ListTile(
-                  title: Text(message.content),
-                  subtitle: Text('From: ${message.userId} - ${message.messageTime}'),
+        // Trong ChatBoxScreen
+        Obx(() {
+          List<MessageModel> messages = chatController.activeChatMessages;
+
+          return Expanded(
+            child: ListView.builder(
+              itemCount: messages.length,
+              itemBuilder: (context, index) {
+                final MessageModel message = messages[index];
+                bool isMyMessage = message.userId == FirebaseAuth.instance.currentUser?.uid;
+
+                return Container(
+                  padding: EdgeInsets.symmetric(horizontal: 8.0),
+                  margin: EdgeInsets.symmetric(vertical: 4.0),
+                  child: Column(
+                    crossAxisAlignment: isMyMessage ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        DateFormat('dd/MM HH:mm').format(message.messageTime),
+                        style: TextStyle(
+                          color: isMyMessage ? Colors.black : Colors.grey,
+                          fontWeight: FontWeight.normal,
+                          fontSize: 13.0,
+                        ),
+                      ),
+                      Container(
+                        padding: EdgeInsets.all(8.0),
+                        decoration: BoxDecoration(
+                          color: isMyMessage ? Colors.blue : Colors.grey,
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        child: Text(
+                          message.content,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14.0,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 );
-              } else {
-                return Container();
-              }
-            },
-          ),
-        ),
+              },
+            ),
+          );
+        }),
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Row(

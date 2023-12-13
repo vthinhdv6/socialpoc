@@ -25,7 +25,7 @@ class Profile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     print('userId: $userId');
-    return MaterialApp(
+    return GetMaterialApp(
       title: 'Profile',
       home: TikTokProfileScreen(
         uIdUserFirebase: userId,
@@ -39,7 +39,6 @@ class TikTokProfileScreen extends StatefulWidget {
       : super(key: key);
 
   final String uIdUserFirebase;
-
 
   @override
   State<TikTokProfileScreen> createState() => _TikTokProfileScreenState();
@@ -336,114 +335,162 @@ class _TikTokProfileScreenState extends State<TikTokProfileScreen> {
                                   builder: (context, snapshot) {
                                     if (snapshot.hasData) {
                                       return Container(
-                                          alignment: Alignment.center,
-                                          width: double.infinity,
-                                          child: snapshot.data!
-                                              ? Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    ElevatedButton(
-                                                      // onPressed: () {
-                                                      //   followUserToFirebase(
-                                                      //       // FirebaseAuth.instance.currentUser!.email, userModel!.email);
-                                                      // },
-                                                      style: const ButtonStyle(
-                                                        backgroundColor:
-                                                            MaterialStatePropertyAll<
-                                                                    Color>(
-                                                                Colors.white),
-                                                      ),
-                                                      onPressed: () {
-                                                        followUserToFirebase;
-                                                        setState(() {});
-                                                      },
-                                                      child: const Text(
-                                                        'Unfollow',
-                                                        style: TextStyle(
-                                                          color: Colors.black,
-                                                        ),
+                                        alignment: Alignment.center,
+                                        width: double.infinity,
+                                        child: snapshot.data!
+                                            ? Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  ElevatedButton(
+                                                    // onPressed: () {
+                                                    //   followUserToFirebase(
+                                                    //       // FirebaseAuth.instance.currentUser!.email, userModel!.email);
+                                                    // },
+                                                    style: const ButtonStyle(
+                                                      backgroundColor:
+                                                          MaterialStatePropertyAll<
+                                                                  Color>(
+                                                              Colors.white),
+                                                    ),
+                                                    onPressed: () {
+                                                      followUserToFirebase;
+                                                      setState(() {});
+                                                    },
+                                                    child: const Text(
+                                                      'Unfollow',
+                                                      style: TextStyle(
+                                                        color: Colors.black,
                                                       ),
                                                     ),
-                                                    const SizedBox(width: 4),
-                                                    ElevatedButton(
-                                                      // onPressed: () {
-                                                      //   followUserToFirebase(
-                                                      //       // FirebaseAuth.instance.currentUser!.email, userModel!.email);
-                                                      // },
-                                                      style: const ButtonStyle(
-                                                        backgroundColor:
-                                                            MaterialStatePropertyAll<
-                                                                    Color>(
-                                                                Colors.white),
-                                                      ),
-                                                      onPressed: () {},
-                                                      child: const Text(
-                                                        'Send message',
-                                                        style: TextStyle(
-                                                          color: Colors.black,
-                                                        ),
+                                                  ),
+                                                  const SizedBox(width: 4),
+                                                  ElevatedButton(
+                                                    // onPressed: () {
+                                                    //   followUserToFirebase(
+                                                    //       // FirebaseAuth.instance.currentUser!.email, userModel!.email);
+                                                    // },
+                                                    style: const ButtonStyle(
+                                                      backgroundColor:
+                                                          MaterialStatePropertyAll<
+                                                                  Color>(
+                                                              Colors.white),
+                                                    ),
+                                                    onPressed: () {},
+                                                    child: const Text(
+                                                      'Send message',
+                                                      style: TextStyle(
+                                                        color: Colors.black,
                                                       ),
                                                     ),
-                                                  ],
-                                                )
-                                          : Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                            children: [
-                                              ElevatedButton(
-                                                onPressed: () {
-                                                  // Xử lý khi nút "Follow" được nhấn
-                                                  followUserToFirebase(
-                                                    FirebaseAuth.instance.currentUser?.email,
-                                                    userCurrent.email,
-                                                  );
-                                                  setState(() {});
-                                                },
-                                                style: const ButtonStyle(
-                                                  backgroundColor: MaterialStatePropertyAll<Color>(Colors.red),
-                                                ),
-                                                child: const Text(
-                                                  'Follow',
-                                                  style: TextStyle(
-                                                    color: Colors.white,
                                                   ),
-                                                ),
-                                              ),
-                                              const SizedBox(width: 4),
-                                              ElevatedButton(
-                                                onPressed: () async {
-                                                  String currentUserId = FirebaseAuth.instance.currentUser?.uid ?? '';
-                                                  String otherUserId = widget.uIdUserFirebase;
-
-                                                  // Create a chat
-                                                  List<String> userIds = [currentUserId, otherUserId];
-                                                  await chatController.createChat(userIds);
-
-                                                  // Fetch the updated chat list
-                                                  await chatController.fetchChatsFromFirebase();
-
-                                                  // Navigate to the chat screen with the newly created chat
-                                                  ChatModel newChat = chatController.chatList.firstWhere(
-                                                        (chat) => chat.userIds.contains(currentUserId) && chat.userIds.contains(otherUserId),
-                                                  );
-
-                                                  await chatController.navigateToChat(newChat);
-                                                },
-                                                style: const ButtonStyle(
-                                                  backgroundColor: MaterialStatePropertyAll<Color>(Colors.grey),
-                                                ),
-                                                child: const Text(
-                                                  'Nhắn Tin',
-                                                  style: TextStyle(
-                                                    color: Colors.white,
+                                                ],
+                                              )
+                                            : Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceEvenly,
+                                                children: [
+                                                  ElevatedButton(
+                                                    onPressed: () {
+                                                      // Xử lý khi nút "Follow" được nhấn
+                                                      followUserToFirebase(
+                                                        FirebaseAuth.instance
+                                                            .currentUser?.email,
+                                                        userCurrent.email,
+                                                      );
+                                                      setState(() {});
+                                                    },
+                                                    style: const ButtonStyle(
+                                                      backgroundColor:
+                                                          MaterialStatePropertyAll<
+                                                                  Color>(
+                                                              Colors.red),
+                                                    ),
+                                                    child: const Text(
+                                                      'Follow',
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
                                                   ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
+                                                  const SizedBox(width: 4),
+                                                  ElevatedButton(
+                                                    onPressed: () async {
+                                                      String currentUserId =
+                                                          FirebaseAuth
+                                                                  .instance
+                                                                  .currentUser
+                                                                  ?.uid ??
+                                                              '';
+                                                      String otherUserId =
+                                                          widget
+                                                              .uIdUserFirebase;
+                                                      ChatModel? existingChat =
+                                                          chatController
+                                                              .chatList
+                                                              .firstWhereOrNull(
+                                                        (chat) =>
+                                                            chat.userIds.contains(
+                                                                currentUserId) &&
+                                                            chat.userIds.contains(
+                                                                otherUserId) &&
+                                                            chat.userIds
+                                                                    .length ==
+                                                                2,
+                                                      );
+                                                      if (existingChat !=
+                                                          null) {
+                                                        await chatController
+                                                            .navigateToChat(
+                                                                existingChat);
+                                                      } else {
+                                                        List<String> userIds = [
+                                                          currentUserId,
+                                                          otherUserId
+                                                        ];
+                                                        await chatController
+                                                            .createChat(
+                                                                userIds);
 
+                                                        // Fetch the updated chat list
+                                                        await chatController
+                                                            .fetchChatsFromFirebase();
+
+                                                        ChatModel newChat =
+                                                            chatController
+                                                                .chatList
+                                                                .firstWhere(
+                                                          (chat) =>
+                                                              chat.userIds.contains(
+                                                                  currentUserId) &&
+                                                              chat.userIds
+                                                                  .contains(
+                                                                      otherUserId),
+                                                        );
+
+                                                        await chatController
+                                                            .navigateToChat(
+                                                                newChat);
+                                                      }
+                                                      setState(() {});
+                                                    },
+                                                    style: const ButtonStyle(
+                                                      backgroundColor:
+                                                          MaterialStatePropertyAll<
+                                                                  Color>(
+                                                              Colors.grey),
+                                                    ),
+                                                    child: const Text(
+                                                      'Nhắn Tin',
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
                                       );
-
                                     } else if (snapshot.hasError) {
                                       return Text(snapshot.error.toString());
                                     } else {
@@ -536,6 +583,4 @@ class _TikTokProfileScreenState extends State<TikTokProfileScreen> {
                   numberCountFollowers: userCurrent.followers.length - 1,
                 )));
   }
-
-
 }

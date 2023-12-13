@@ -3,7 +3,7 @@ import 'MessageModel.dart';
 class ChatModel {
   final String chatId; // Primary Key
   final List<String> userIds; // Mảng lưu userId của những người tham gia cuộc trò chuyện
-  final List<MessageModel> messages; // Mảng lưu thông tin về tin nhắn
+   List<MessageModel> messages; // Mảng lưu thông tin về tin nhắn
 
   ChatModel({
     required this.chatId,
