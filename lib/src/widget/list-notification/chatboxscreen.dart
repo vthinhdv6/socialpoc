@@ -15,9 +15,8 @@ class ChatBoxScreen extends StatelessWidget {
 
   ChatBoxScreen({
     required this.chat,
-    required this.chatController,
     required this.messageController,
-  });
+  }) : chatController = Get.find();
 
   @override
   Widget build(BuildContext context) {

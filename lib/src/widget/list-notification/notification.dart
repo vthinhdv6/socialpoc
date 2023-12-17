@@ -19,3 +19,23 @@ Future<void> initializeNotifications() async {
     initializationSettings,
   );
 }
+void showNotification(String title, String body) async {
+  const AndroidNotificationDetails androidPlatformChannelSpecifics =
+  AndroidNotificationDetails(
+    'your_channel_id', // Change this value to a unique channel ID
+    'your_channel_name', // Change this value to a unique channel name
+    importance: Importance.max,
+    priority: Priority.high,
+  );
+  const NotificationDetails platformChannelSpecifics =
+  NotificationDetails(android: androidPlatformChannelSpecifics);
+
+  await flutterLocalNotificationsPlugin.show(
+    0, // Notification ID
+    title,
+    body,
+    platformChannelSpecifics,
+    payload: 'item x', // You can add additional data here if needed
+  );
+}
+

@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:socialpoc/data/model/fake_data_fire_base.dart';
 import 'package:socialpoc/src/model/UserModel.dart';
+
+import '../../src/widget/list-notification/notification.dart';
 
 Future<void> followUserToFirebase(String? emailUserFollow, String? emailUserFollowed) async {
   final CollectionReference userCollection = FirebaseFirestore.instance.collection('users');
@@ -36,6 +39,9 @@ Future<void> followUserToFirebase(String? emailUserFollow, String? emailUserFoll
         'following': userModelFollow.following,
       });
     }
+  }
+  if (emailUserFollowed != FirebaseAuth.instance.currentUser?.email) {
+    showNotification('Theo dõi mới', 'Có người đang theo dõi bạn!');
   }
 }
 

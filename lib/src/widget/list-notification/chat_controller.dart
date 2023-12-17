@@ -1,4 +1,4 @@
-// Trong ChatController
+
 import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
@@ -143,7 +143,7 @@ class ChatController extends GetxController {
     print('Navigating to chat: $chat');
     await Get.to(() => ChatBoxScreen(
       chat: chat,
-      chatController: this,
+
       messageController: TextEditingController(),
     ));
   }
@@ -167,6 +167,26 @@ class ChatController extends GetxController {
       payload: 'item x',
     );
   }
+  static ChatController get to => Get.put(ChatController());
+  void listenForNewMessages(String chatId) {
+    FirebaseFirestore.instance
+        .collection('chats')
+        .doc(chatId)
+        .snapshots()
+        .listen((DocumentSnapshot<Map<String, dynamic>> snapshot) {
+      if (snapshot.exists) {
+        List<dynamic> messages = snapshot.data()?['messages'];
+        if (messages != null) {
+          // Assume the last message is the newest one
+          Map<String, dynamic> lastMessage = messages.last;
+          String content = lastMessage['content'];
 
-
+          // Check if the message is from another user
+          if (lastMessage['userId'] != FirebaseAuth.instance.currentUser?.uid) {
+            showNotification('Tin nhắn mới', content);
+          }
+        }
+      }
+    });
+  }
 }
