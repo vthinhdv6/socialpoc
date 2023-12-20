@@ -7,6 +7,7 @@ import 'package:socialpoc/src/model/CommentModel.dart';
 import '../model/UserModel.dart';
 import '../model/videoModel.dart';
 import '../widget/home.dart';
+import '../widget/list-notification/notification.dart';
 import 'comment_controller.dart';
 
 class CommentScreen extends StatefulWidget {
@@ -24,6 +25,7 @@ class _CommentScreenState extends State<CommentScreen> {
   final TextEditingController _commentController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   final CommentController commentController = Get.put(CommentController());
+
 
   @override
   Widget build(BuildContext context) {
@@ -104,8 +106,8 @@ class _CommentScreenState extends State<CommentScreen> {
                                   FirebaseAuth.instance.currentUser?.uid ?? 'defaultUserId';
 
                               String commentId = uid;
+                              showNotification('bình luận mới', 'bạn có bình luận mới từ video của bạn.');
 
-                              // Add the comment to Firestore
                               DocumentReference commentRef =
                                   await FirebaseFirestore.instance.collection('comments').add({
                                 'commentId': commentId,

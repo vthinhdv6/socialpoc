@@ -1,14 +1,20 @@
+import 'UserModel.dart';
+
 class MessageModel {
   final String messageId; // Primary Key
   final String userId; // Khóa ngoại tới bảng Users
   final String content;
   final DateTime messageTime;
+  UserModel? receiver;
+  String? receiverId;
 
   MessageModel({
     required this.messageId,
     required this.userId,
     required this.content,
     required this.messageTime,
+    this.receiver,
+    this.receiverId,
   });
 
   // Factory constructor để tạo đối tượng từ dữ liệu Firebase
