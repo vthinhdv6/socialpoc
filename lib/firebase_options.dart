@@ -49,6 +49,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '317704986009',
     projectId: 'proud-lead-392506',
     authDomain: 'proud-lead-392506.firebaseapp.com',
+    databaseURL: 'https://proud-lead-392506-default-rtdb.firebaseio.com',
     storageBucket: 'proud-lead-392506.appspot.com',
     measurementId: 'G-0G28M4RK6N',
   );
@@ -58,6 +59,7 @@ class DefaultFirebaseOptions {
     appId: '1:317704986009:android:e0eccb65376cc4d9e30708',
     messagingSenderId: '317704986009',
     projectId: 'proud-lead-392506',
+    databaseURL: 'https://proud-lead-392506-default-rtdb.firebaseio.com',
     storageBucket: 'proud-lead-392506.appspot.com',
   );
 
@@ -66,6 +68,7 @@ class DefaultFirebaseOptions {
     appId: '1:317704986009:ios:e270be77ff2493efe30708',
     messagingSenderId: '317704986009',
     projectId: 'proud-lead-392506',
+    databaseURL: 'https://proud-lead-392506-default-rtdb.firebaseio.com',
     storageBucket: 'proud-lead-392506.appspot.com',
     iosBundleId: 'com.example.socialpoc',
   );
@@ -75,6 +78,7 @@ class DefaultFirebaseOptions {
     appId: '1:317704986009:ios:4396f4d8cef96610e30708',
     messagingSenderId: '317704986009',
     projectId: 'proud-lead-392506',
+    databaseURL: 'https://proud-lead-392506-default-rtdb.firebaseio.com',
     storageBucket: 'proud-lead-392506.appspot.com',
     iosBundleId: 'com.example.socialpoc.RunnerTests',
   );

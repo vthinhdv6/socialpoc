@@ -5,6 +5,8 @@ import 'package:socialpoc/src/widget/list-notification/notification.dart';
 import 'firebase_options.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 
+import 'src/widget/main_screen.dart';
+
 
 
 void main() async {
@@ -28,7 +30,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: LoginScreenMainApp(),
+      home: MainScreen(),
     );
   }
 }
