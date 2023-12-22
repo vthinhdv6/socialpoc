@@ -19,14 +19,12 @@ import '../upvideo.dart';
 import 'profile_controller.dart';
 
 class Profile extends StatelessWidget {
-  const Profile({Key? key, this.userId = "current"}) : super(key: key);
+  const Profile({this.userId = "current", super.key});
   final String userId;
 
   @override
   Widget build(BuildContext context) {
-    print('userId: $userId');
-    return GetMaterialApp(
-      title: 'Profile',
+    return MaterialApp(
       home: TikTokProfileScreen(
         uIdUserFirebase: userId,
       ),
@@ -35,8 +33,10 @@ class Profile extends StatelessWidget {
 }
 
 class TikTokProfileScreen extends StatefulWidget {
-  TikTokProfileScreen({Key? key, required this.uIdUserFirebase})
-      : super(key: key);
+  const TikTokProfileScreen({
+    super.key,
+    required this.uIdUserFirebase,
+  });
 
   final String uIdUserFirebase;
 
@@ -74,12 +74,12 @@ class _TikTokProfileScreenState extends State<TikTokProfileScreen> {
         : uIdUserProfile = widget.uIdUserFirebase;
     userCurrent = generateFakeUser();
     final CollectionReference usersCollection =
-    FirebaseFirestore.instance.collection('users');
+        FirebaseFirestore.instance.collection('users');
     final DocumentSnapshot documentSnapshot =
-    await usersCollection.doc(uIdUserProfile).get();
+        await usersCollection.doc(uIdUserProfile).get();
     if (documentSnapshot.data() != null) {
       Map<String, dynamic> jsonDecodeUser =
-      documentSnapshot.data() as Map<String, dynamic>;
+          documentSnapshot.data() as Map<String, dynamic>;
       userCurrent = UserModel.fromMap(jsonDecodeUser);
       return userCurrent;
     }
@@ -89,9 +89,9 @@ class _TikTokProfileScreenState extends State<TikTokProfileScreen> {
   Future<void> changeUserInformation(
       bool optionChange, String contentChange) async {
     final CollectionReference userCollection =
-    FirebaseFirestore.instance.collection('users');
+        FirebaseFirestore.instance.collection('users');
     final DocumentSnapshot documentSnapshot =
-    await userCollection.doc(FirebaseAuth.instance.currentUser?.uid).get();
+        await userCollection.doc(FirebaseAuth.instance.currentUser?.uid).get();
     if (documentSnapshot.data() != null) {
       if (optionChange) {
         documentSnapshot.reference.update({
@@ -134,48 +134,48 @@ class _TikTokProfileScreenState extends State<TikTokProfileScreen> {
                           child: CircleAvatar(
                             radius: 40.0,
                             backgroundImage:
-                            NetworkImage(userCurrent.avatarUrl),
+                                NetworkImage(userCurrent.avatarUrl),
                           ),
                         ),
                         uIdUserProfile.contains(
-                            FirebaseAuth.instance.currentUser!.uid)
+                                FirebaseAuth.instance.currentUser!.uid)
                             ? Positioned(
-                          child: Container(
-                            width: double.infinity,
-                            height: 100.0,
-                            alignment: Alignment.bottomCenter,
-                            child: SizedBox(
-                              width: 30.0,
-                              height: 30.0,
-                              child: ElevatedButton(
-                                onPressed: () async {
-                                  FilePickerResult? result =
-                                  await FilePicker.platform.pickFiles(
-                                    type: FileType.image,
-                                  );
-                                  if (result != null &&
-                                      result.files.isNotEmpty) {
-                                    final selectedFile =
-                                        result.files.single;
-                                    if (selectedFile.path != null) {
-                                      File imageFile =
-                                      File(selectedFile.path!);
-                                      String userId = FirebaseAuth
-                                          .instance
-                                          .currentUser
-                                          ?.uid ??
-                                          '';
-                                      await videoController.uploadAvatar(
-                                          imageFile, userId);
-                                      setState(() {});
-                                    } else {}
-                                  }
-                                },
-                                child: const Icon(Icons.camera),
-                              ),
-                            ),
-                          ),
-                        )
+                                child: Container(
+                                  width: double.infinity,
+                                  height: 100.0,
+                                  alignment: Alignment.bottomCenter,
+                                  child: SizedBox(
+                                    width: 30.0,
+                                    height: 30.0,
+                                    child: ElevatedButton(
+                                      onPressed: () async {
+                                        FilePickerResult? result =
+                                            await FilePicker.platform.pickFiles(
+                                          type: FileType.image,
+                                        );
+                                        if (result != null &&
+                                            result.files.isNotEmpty) {
+                                          final selectedFile =
+                                              result.files.single;
+                                          if (selectedFile.path != null) {
+                                            File imageFile =
+                                                File(selectedFile.path!);
+                                            String userId = FirebaseAuth
+                                                    .instance
+                                                    .currentUser
+                                                    ?.uid ??
+                                                '';
+                                            await videoController.uploadAvatar(
+                                                imageFile, userId);
+                                            setState(() {});
+                                          } else {}
+                                        }
+                                      },
+                                      child: const Icon(Icons.camera),
+                                    ),
+                                  ),
+                                ),
+                              )
                             : const SizedBox()
                       ]),
                       Row(
@@ -184,80 +184,80 @@ class _TikTokProfileScreenState extends State<TikTokProfileScreen> {
                         children: [
                           isEditingName
                               ? SizedBox(
-                            width: MediaQuery.sizeOf(context).width * 0.3,
-                            child: TextField(
-                              controller: textEditingControllerUsername,
-                              decoration: const InputDecoration(
-                                hintText: 'Type something...',
-                                // You can customize the appearance of the text field using various properties of InputDecoration
-                              ),
-                            ),
-                          )
+                                  width: MediaQuery.sizeOf(context).width * 0.3,
+                                  child: TextField(
+                                    controller: textEditingControllerUsername,
+                                    decoration: const InputDecoration(
+                                      hintText: 'Type something...',
+                                      // You can customize the appearance of the text field using various properties of InputDecoration
+                                    ),
+                                  ),
+                                )
                               : Text(
-                            snapshot.data!.userName,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: textSizeMedium * 1.2,
-                              color: colorBorder,
-                            ),
-                          ),
+                                  snapshot.data!.userName,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: textSizeMedium * 1.2,
+                                    color: colorBorder,
+                                  ),
+                                ),
                           const SizedBox(
                             width: 3,
                           ),
                           isEditingName
                               ? InkWell(
-                            onTap: () {
-                              textEditingControllerUsername.text != ''
-                                  ? changeUserInformation(true,
-                                  textEditingControllerUsername.text)
-                                  : showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: const Text('Validation'),
-                                    content: const Text(
-                                        "You haven't entered the specified content"),
-                                    actions: <Widget>[
-                                      TextButton(
-                                        style: TextButton.styleFrom(
-                                          textStyle:
-                                          Theme.of(context)
-                                              .textTheme
-                                              .labelLarge,
-                                        ),
-                                        child: const Text(
-                                            'I understand'),
-                                        onPressed: () {
-                                          Navigator.of(context)
-                                              .pop();
-                                        },
-                                      ),
-                                    ],
-                                  );
-                                },
-                              );
-                            },
-                            child: const Icon(Icons.save_alt),
-                          )
+                                  onTap: () {
+                                    textEditingControllerUsername.text != ''
+                                        ? changeUserInformation(true,
+                                            textEditingControllerUsername.text)
+                                        : showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return AlertDialog(
+                                                title: const Text('Validation'),
+                                                content: const Text(
+                                                    "You haven't entered the specified content"),
+                                                actions: <Widget>[
+                                                  TextButton(
+                                                    style: TextButton.styleFrom(
+                                                      textStyle:
+                                                          Theme.of(context)
+                                                              .textTheme
+                                                              .labelLarge,
+                                                    ),
+                                                    child: const Text(
+                                                        'I understand'),
+                                                    onPressed: () {
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    },
+                                                  ),
+                                                ],
+                                              );
+                                            },
+                                          );
+                                  },
+                                  child: const Icon(Icons.save_alt),
+                                )
                               : uIdUserProfile.contains(
-                              FirebaseAuth.instance.currentUser!.uid)
-                              ? GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                isEditingName = true;
-                              });
-                            },
-                            child: Container(
-                                decoration: BoxDecoration(
-                                    borderRadius:
-                                    BorderRadius.circular(75),
-                                    border: Border.all(
-                                        width: 1,
-                                        color: Colors.black)),
-                                child: const Icon(
-                                    Icons.mode_edit_outlined)),
-                          )
-                              : SizedBox(),
+                                      FirebaseAuth.instance.currentUser!.uid)
+                                  ? GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          isEditingName = true;
+                                        });
+                                      },
+                                      child: Container(
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(75),
+                                              border: Border.all(
+                                                  width: 1,
+                                                  color: Colors.black)),
+                                          child: const Icon(
+                                              Icons.mode_edit_outlined)),
+                                    )
+                                  : SizedBox(),
                         ],
                       ),
                       Row(
@@ -304,200 +304,200 @@ class _TikTokProfileScreenState extends State<TikTokProfileScreen> {
                             color: Colors.white,
                           ),
                           child: uIdUserProfile.contains(
-                              FirebaseAuth.instance.currentUser!.uid)
+                                  FirebaseAuth.instance.currentUser!.uid)
                               ? Row(
-                            mainAxisAlignment:
-                            MainAxisAlignment.spaceEvenly,
-                            children: [
-                              ButtonCommonWidget(
-                                buttonText: 'Thông báo',
-                                fontColor: colorText,
-                                onPressed: () {},
-                                backgroundColor: Colors.white,
-                                borderColor: colorText,
-                              ),
-                              ButtonCommonWidget(
-                                buttonText: 'Chia sẻ hồ sơ',
-                                onPressed: () {},
-                                borderColor: Colors.transparent,
-                              ),
-                              ButtonCommonWidget(
-                                buttonText: 'Follow +',
-                                onPressed: () {},
-                                borderColor: Colors.transparent,
-                              ),
-                            ],
-                          )
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    ButtonCommonWidget(
+                                      buttonText: 'Thông báo',
+                                      fontColor: colorText,
+                                      onPressed: () {},
+                                      backgroundColor: Colors.white,
+                                      borderColor: colorText,
+                                    ),
+                                    ButtonCommonWidget(
+                                      buttonText: 'Chia sẻ hồ sơ',
+                                      onPressed: () {},
+                                      borderColor: Colors.transparent,
+                                    ),
+                                    ButtonCommonWidget(
+                                      buttonText: 'Follow +',
+                                      onPressed: () {},
+                                      borderColor: Colors.transparent,
+                                    ),
+                                  ],
+                                )
                               : FutureBuilder<bool>(
-                            future: isFollowUser(
-                                FirebaseAuth.instance.currentUser!.uid,
-                                'yAQdk28qRNDfxYMaeN1s'),
-                            builder: (context, snapshot) {
-                              if (snapshot.hasData) {
-                                return Container(
-                                  alignment: Alignment.center,
-                                  width: double.infinity,
-                                  child: snapshot.data!
-                                      ? Row(
-                                    mainAxisAlignment:
-                                    MainAxisAlignment.center,
-                                    children: [
-                                      ElevatedButton(
-                                        // onPressed: () {
-                                        //   followUserToFirebase(
-                                        //       // FirebaseAuth.instance.currentUser!.email, userModel!.email);
-                                        // },
-                                        style: const ButtonStyle(
-                                          backgroundColor:
-                                          MaterialStatePropertyAll<
-                                              Color>(
-                                              Colors.white),
-                                        ),
-                                        onPressed: () {
-                                          followUserToFirebase;
-                                          setState(() {});
-                                        },
-                                        child: const Text(
-                                          'Unfollow',
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(width: 4),
-                                      ElevatedButton(
-                                        // onPressed: () {
-                                        //   followUserToFirebase(
-                                        //       // FirebaseAuth.instance.currentUser!.email, userModel!.email);
-                                        // },
-                                        style: const ButtonStyle(
-                                          backgroundColor:
-                                          MaterialStatePropertyAll<
-                                              Color>(
-                                              Colors.white),
-                                        ),
-                                        onPressed: () {},
-                                        child: const Text(
-                                          'Send message',
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                                      : Row(
-                                    mainAxisAlignment:
-                                    MainAxisAlignment
-                                        .spaceEvenly,
-                                    children: [
-                                      ElevatedButton(
-                                        onPressed: () {
-                                          // Xử lý khi nút "Follow" được nhấn
-                                          followUserToFirebase(
-                                            FirebaseAuth.instance
-                                                .currentUser?.email,
-                                            userCurrent.email,
-                                          );
-                                          setState(() {});
-                                        },
-                                        style: const ButtonStyle(
-                                          backgroundColor:
-                                          MaterialStatePropertyAll<
-                                              Color>(
-                                              Colors.red),
-                                        ),
-                                        child: const Text(
-                                          'Follow',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(width: 4),
-                                      ElevatedButton(
-                                        onPressed: () async {
-                                          String currentUserId =
-                                              FirebaseAuth
-                                                  .instance
-                                                  .currentUser
-                                                  ?.uid ??
-                                                  '';
-                                          String otherUserId =
-                                              widget
-                                                  .uIdUserFirebase;
-                                          ChatModel? existingChat =
-                                          chatController
-                                              .chatList
-                                              .firstWhereOrNull(
-                                                (chat) =>
-                                            chat.userIds.contains(
-                                                currentUserId) &&
-                                                chat.userIds.contains(
-                                                    otherUserId) &&
-                                                chat.userIds
-                                                    .length ==
-                                                    2,
-                                          );
-                                          if (existingChat !=
-                                              null) {
-                                            await chatController
-                                                .navigateToChat(
-                                                existingChat);
-                                          } else {
-                                            List<String> userIds = [
-                                              currentUserId,
-                                              otherUserId
-                                            ];
-                                            await chatController
-                                                .createChat(
-                                                userIds);
+                                  future: isFollowUser(
+                                      FirebaseAuth.instance.currentUser!.uid,
+                                      'yAQdk28qRNDfxYMaeN1s'),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.hasData) {
+                                      return Container(
+                                        alignment: Alignment.center,
+                                        width: double.infinity,
+                                        child: snapshot.data!
+                                            ? Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  ElevatedButton(
+                                                    // onPressed: () {
+                                                    //   followUserToFirebase(
+                                                    //       // FirebaseAuth.instance.currentUser!.email, userModel!.email);
+                                                    // },
+                                                    style: const ButtonStyle(
+                                                      backgroundColor:
+                                                          MaterialStatePropertyAll<
+                                                                  Color>(
+                                                              Colors.white),
+                                                    ),
+                                                    onPressed: () {
+                                                      followUserToFirebase;
+                                                      setState(() {});
+                                                    },
+                                                    child: const Text(
+                                                      'Unfollow',
+                                                      style: TextStyle(
+                                                        color: Colors.black,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(width: 4),
+                                                  ElevatedButton(
+                                                    // onPressed: () {
+                                                    //   followUserToFirebase(
+                                                    //       // FirebaseAuth.instance.currentUser!.email, userModel!.email);
+                                                    // },
+                                                    style: const ButtonStyle(
+                                                      backgroundColor:
+                                                          MaterialStatePropertyAll<
+                                                                  Color>(
+                                                              Colors.white),
+                                                    ),
+                                                    onPressed: () {},
+                                                    child: const Text(
+                                                      'Send message',
+                                                      style: TextStyle(
+                                                        color: Colors.black,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              )
+                                            : Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceEvenly,
+                                                children: [
+                                                  ElevatedButton(
+                                                    onPressed: () {
+                                                      // Xử lý khi nút "Follow" được nhấn
+                                                      followUserToFirebase(
+                                                        FirebaseAuth.instance
+                                                            .currentUser?.email,
+                                                        userCurrent.email,
+                                                      );
+                                                      setState(() {});
+                                                    },
+                                                    style: const ButtonStyle(
+                                                      backgroundColor:
+                                                          MaterialStatePropertyAll<
+                                                                  Color>(
+                                                              Colors.red),
+                                                    ),
+                                                    child: const Text(
+                                                      'Follow',
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(width: 4),
+                                                  ElevatedButton(
+                                                    onPressed: () async {
+                                                      String currentUserId =
+                                                          FirebaseAuth
+                                                                  .instance
+                                                                  .currentUser
+                                                                  ?.uid ??
+                                                              '';
+                                                      String otherUserId =
+                                                          widget
+                                                              .uIdUserFirebase;
+                                                      ChatModel? existingChat =
+                                                          chatController
+                                                              .chatList
+                                                              .firstWhereOrNull(
+                                                        (chat) =>
+                                                            chat.userIds.contains(
+                                                                currentUserId) &&
+                                                            chat.userIds.contains(
+                                                                otherUserId) &&
+                                                            chat.userIds
+                                                                    .length ==
+                                                                2,
+                                                      );
+                                                      if (existingChat !=
+                                                          null) {
+                                                        await chatController
+                                                            .navigateToChat(
+                                                                existingChat);
+                                                      } else {
+                                                        List<String> userIds = [
+                                                          currentUserId,
+                                                          otherUserId
+                                                        ];
+                                                        await chatController
+                                                            .createChat(
+                                                                userIds);
 
-                                            // Fetch the updated chat list
-                                            await chatController
-                                                .fetchChatsFromFirebase();
+                                                        // Fetch the updated chat list
+                                                        await chatController
+                                                            .fetchChatsFromFirebase();
 
-                                            ChatModel newChat =
-                                            chatController
-                                                .chatList
-                                                .firstWhere(
-                                                  (chat) =>
-                                              chat.userIds.contains(
-                                                  currentUserId) &&
-                                                  chat.userIds
-                                                      .contains(
-                                                      otherUserId),
-                                            );
+                                                        ChatModel newChat =
+                                                            chatController
+                                                                .chatList
+                                                                .firstWhere(
+                                                          (chat) =>
+                                                              chat.userIds.contains(
+                                                                  currentUserId) &&
+                                                              chat.userIds
+                                                                  .contains(
+                                                                      otherUserId),
+                                                        );
 
-                                            await chatController
-                                                .navigateToChat(
-                                                newChat);
-                                          }
-                                          setState(() {});
-                                        },
-                                        style: const ButtonStyle(
-                                          backgroundColor:
-                                          MaterialStatePropertyAll<
-                                              Color>(
-                                              Colors.grey),
-                                        ),
-                                        child: const Text(
-                                          'Nhắn Tin',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              } else if (snapshot.hasError) {
-                                return Text(snapshot.error.toString());
-                              } else {
-                                return const SizedBox();
-                              }
-                            },
-                          )),
+                                                        await chatController
+                                                            .navigateToChat(
+                                                                newChat);
+                                                      }
+                                                      setState(() {});
+                                                    },
+                                                    style: const ButtonStyle(
+                                                      backgroundColor:
+                                                          MaterialStatePropertyAll<
+                                                                  Color>(
+                                                              Colors.grey),
+                                                    ),
+                                                    child: const Text(
+                                                      'Nhắn Tin',
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                      );
+                                    } else if (snapshot.hasError) {
+                                      return Text(snapshot.error.toString());
+                                    } else {
+                                      return const SizedBox();
+                                    }
+                                  },
+                                )),
                       const Divider(
                         color: colorBackground2,
                         height: 1,
@@ -523,26 +523,26 @@ class _TikTokProfileScreenState extends State<TikTokProfileScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: List.generate(
                                   3,
-                                      (index) {
+                                  (index) {
                                     final videoIndex = pageIndex * 3 + index;
                                     if (videoIndex <
-                                        videoController.videos.length &&
+                                            videoController.videos.length &&
                                         videoController
-                                            .videos[videoIndex].user ==
+                                                .videos[videoIndex].user ==
                                             FirebaseAuth
                                                 .instance.currentUser?.uid) {
                                       return Container(
                                         height: 150.0,
                                         width:
-                                        MediaQuery.of(context).size.width /
-                                            3 -
-                                            3,
+                                            MediaQuery.of(context).size.width /
+                                                    3 -
+                                                3,
                                         margin: const EdgeInsets.symmetric(
                                             horizontal: 0.7),
                                         child: Chewie(
                                           controller: ChewieController(
                                             videoPlayerController:
-                                            VideoPlayerController.network(
+                                                VideoPlayerController.network(
                                               videoController
                                                   .videos[videoIndex].url,
                                             ),
@@ -579,8 +579,8 @@ class _TikTokProfileScreenState extends State<TikTokProfileScreen> {
         context,
         MaterialPageRoute(
             builder: (context) => ContactInformationIntime(
-              userCurrentModel: userCurrent,
-              numberCountFollowers: userCurrent.followers.length - 1,
-            )));
+                  userCurrentModel: userCurrent,
+                  numberCountFollowers: userCurrent.followers.length - 1,
+                )));
   }
 }
