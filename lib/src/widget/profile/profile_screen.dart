@@ -513,38 +513,26 @@ class _TikTokProfileScreenState extends State<TikTokProfileScreen> {
                         unselectLabelBackground: Colors.white,
                       ),
                       Expanded(
-                        child: ListView.builder(
-                          scrollDirection: Axis.vertical,
-                          itemCount: (videoController.videos.length / 3).ceil(),
-                          itemBuilder: (context, pageIndex) {
-                            return SizedBox(
-                              height: 200.0,
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: List.generate(
-                                  3,
-                                      (index) {
-                                    final videoIndex = pageIndex * 3 + index;
-                                    if (videoIndex <
-                                        videoController.videos.length &&
-                                        videoController
-                                            .videos[videoIndex].user ==
-                                            FirebaseAuth
-                                                .instance.currentUser?.uid) {
+                        child: PageView(
+                          controller: pageController,
+                          children: [
+                            SizedBox(
+                              height: 2000.0,
+                              child:Container(
+                                height: 150.0,
+                                child: ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: videoController.videos.length,
+                                  itemBuilder: (context, index) {
+                                    final video = videoController.videos[index];
+                                    if (video.user == FirebaseAuth.instance.currentUser?.uid) {
                                       return Container(
-                                        height: 150.0,
-                                        width:
-                                        MediaQuery.of(context).size.width /
-                                            3 -
-                                            3,
-                                        margin: const EdgeInsets.symmetric(
-                                            horizontal: 0.7),
+                                        width: MediaQuery.of(context).size.width / 3 - 3,
+                                        margin: const EdgeInsets.symmetric(horizontal: 0.7),
                                         child: Chewie(
                                           controller: ChewieController(
-                                            videoPlayerController:
-                                            VideoPlayerController.network(
-                                              videoController
-                                                  .videos[videoIndex].url,
+                                            videoPlayerController: VideoPlayerController.network(
+                                              video.url,
                                             ),
                                             autoPlay: false,
                                             looping: false,
@@ -557,8 +545,10 @@ class _TikTokProfileScreenState extends State<TikTokProfileScreen> {
                                   },
                                 ),
                               ),
-                            );
-                          },
+
+                            ),
+                            // Add more pages if needed
+                          ],
                         ),
                       ),
                     ]);
