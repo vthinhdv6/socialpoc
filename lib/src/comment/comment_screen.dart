@@ -15,7 +15,8 @@ class CommentScreen extends StatefulWidget {
   final String avatarUrl;
   final String userId;
 
-  CommentScreen({required this.video, required this.avatarUrl, required this.userId});
+  CommentScreen(
+      {required this.video, required this.avatarUrl, required this.userId});
 
   @override
   _CommentScreenState createState() => _CommentScreenState();
@@ -26,20 +27,24 @@ class _CommentScreenState extends State<CommentScreen> {
   final ScrollController _scrollController = ScrollController();
   final CommentController commentController = Get.put(CommentController());
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
           // Video Player Section
-          VideoPlayerWidget(
-            videoUrl: widget.video.url,
-            videos: [widget.video],
-            avatarUrl: widget.avatarUrl,
-            currentIndex: 0,
-            video: widget.video,
-            userId: widget.userId,
+          GestureDetector(
+            onTap: (){
+              Navigator.of(context).pop();
+            },
+            child: VideoPlayerWidget(
+              videoUrl: widget.video.url,
+              videos: [widget.video],
+              avatarUrl: widget.avatarUrl,
+              currentIndex: 0,
+              video: widget.video,
+              userId: widget.userId,
+            ),
           ),
           // Comments Section
           Positioned(
@@ -62,8 +67,8 @@ class _CommentScreenState extends State<CommentScreen> {
                         if (snapshot.hasData && snapshot.data != null) {
                           var comments = (snapshot.data! as QuerySnapshot)
                               .docs
-                              .map(
-                                  (doc) => CommentModel.fromMap(doc.data() as Map<String, dynamic>))
+                              .map((doc) => CommentModel.fromMap(
+                                  doc.data() as Map<String, dynamic>))
                               .toList();
 
                           if (comments.isNotEmpty) {
@@ -82,51 +87,62 @@ class _CommentScreenState extends State<CommentScreen> {
                     ),
                   ),
                   // Comment Input Section
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: TextField(
-                            controller: _commentController,
-                            decoration: InputDecoration(
-                              hintText: 'Thêm bình luận...',
+                  InkWell(
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              controller: _commentController,
+                              decoration: InputDecoration(
+                                hintText: 'Thêm bình luận...',
+                              ),
+                              autofocus: true,
                             ),
-                            autofocus: true,
                           ),
-                        ),
-                        ElevatedButton(
-                          onPressed: () async {
-                            // Handle comment submission here
-                            String commentText = _commentController.text;
+                          ElevatedButton(
+                            onPressed: () async {
+                              // Handle comment submission here
+                              String commentText = _commentController.text;
 
-                            if (commentText.isNotEmpty) {
-                              String currentUserId = FirebaseAuth.instance.currentUser!.uid;
-                              String uid =
-                                  FirebaseAuth.instance.currentUser?.uid ?? 'defaultUserId';
+                              if (commentText.isNotEmpty) {
+                                String currentUserId =
+                                    FirebaseAuth.instance.currentUser!.uid;
+                                String uid =
+                                    FirebaseAuth.instance.currentUser?.uid ??
+                                        'defaultUserId';
 
-                              String commentId = uid;
-                              showNotification('bình luận mới', 'bạn có bình luận mới từ video của bạn.');
+                                String commentId = uid;
+                                showNotification('bình luận mới',
+                                    'bạn có bình luận mới từ video của bạn.');
 
-                              DocumentReference commentRef =
-                                  await FirebaseFirestore.instance.collection('comments').add({
-                                'commentId': commentId,
-                                'videoId': widget.video.videoId,
-                                'userId': currentUserId, // Replace with actual user ID
-                                'content': commentText,
-                                'commentTime': DateTime.now().toUtc(),
-                              });
+                                DocumentReference commentRef =
+                                    await FirebaseFirestore.instance
+                                        .collection('comments')
+                                        .add({
+                                  'commentId': commentId,
+                                  'videoId': widget.video.videoId,
+                                  'userId':
+                                      currentUserId, // Replace with actual user ID
+                                  'content': commentText,
+                                  'commentTime': DateTime.now().toUtc(),
+                                });
 
-                              setState(() {
-                                _commentController.clear();
-                                _scrollController
-                                    .jumpTo(_scrollController.position.maxScrollExtent);
-                              });
-                            }
-                          },
-                          child: Text('Bình luận'),
-                        ),
-                      ],
+                                setState(() {
+                                  _commentController.clear();
+                                  _scrollController.jumpTo(_scrollController
+                                      .position.maxScrollExtent);
+                                });
+                              }
+                            },
+                            child: Text('Bình luận'),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],
